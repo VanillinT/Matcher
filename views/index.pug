@@ -1,0 +1,13 @@
+extends layout
+block content
+	div.table-bordered.overflow-auto
+		div.btn-group.btn-group-toggle.d-block.m-auto(data-toggle='buttons')
+			label.rounded-0.bmrk.btn.btn-outline-secondary.active='Сопоставление шаблонов и данных'
+				input#option1(type='radio' name='dataloadpage' autocomplete='off' checked)
+			label.rounded-0.bmrk.btn.btn-outline-secondary='Статус'
+				input#option2(type='radio' name='statuspage' autocomplete='off')
+			label.rounded-0.bmrk.btn.btn-outline-secondary='Запуск модели'
+				input#option3(type='radio' name='launchpage' autocomplete='off')
+		div#content
+			div
+	script(src='/javascripts/init.js')
