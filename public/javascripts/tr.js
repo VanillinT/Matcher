@@ -11,6 +11,8 @@ function tr(params) {
 	let selected_rowsym = null;
 	let selected_state = false;
 
+	let fd;
+
 	this.UI = function () {
 		if(!dom) {
 			dom = document.createElement('tr');
@@ -20,7 +22,7 @@ function tr(params) {
 	}
 
 	this.data= function () {
-		return {selected_template,selected_data,selected_splitter,selected_rowsym};
+		return fd;
 	}
 
 	this.validate= function() {
@@ -36,10 +38,16 @@ function tr(params) {
 			}
 		});
 		if(valid) {
-			selected_data = URL.createObjectURL(sd[0].files[0]);
-			selected_template = URL.createObjectURL(st[0].files[0]);
+			selected_data = sd[0].files[0];
+			selected_template = st[0].files[0];
 			selected_splitter = $(ss)[0].value;
 			selected_rowsym = $(sr)[0].value;
+
+			fd = new FormData();
+			fd.append('files', selected_template);
+			fd.append('files', selected_data);
+			fd.append('body', selected_splitter);
+			fd.append('body', selected_rowsym);
 		}
 		return valid;
 	}

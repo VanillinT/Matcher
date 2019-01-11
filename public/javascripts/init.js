@@ -8,13 +8,13 @@ function addRow() {
 	rowcount++;
 	$('input[type="file"]').on('change',function(){
 		let fileName = $(this).val();
-		if(fileName){
+		if(fileName) {
 			$(this).removeClass('is-invalid');
 			$(this).next('.custom-file-label').html(fileName);
 		}
 	});
 	$('input[type="text"]').on('change', function () {
-		$(this)[0].value = $(this)[0].val().trim();
+		$(this)[0].value = $(this)[0].value.trim();
 		$(this).removeClass('is-invalid');
 	});
 }
@@ -58,7 +58,7 @@ $(document).ready(()=> {
 	});
 
 	$('#btn_start').click(async function () {
-		let path = $('#selected_path')[0].val();
+		let path = $('#selected_path')[0].value;
 		if(isNullOrWhitespace(path))
 			$('#selected_path').addClass('is-invalid');
 		let rows_data = [];
