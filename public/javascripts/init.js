@@ -1,22 +1,14 @@
 let rowcount = 0;
 let rows = [];
-function addRow() {
-	let newrow = new tr({spl:';', nrow:'/t', id: rowcount});
+function addRow(data) {
+	if(!data)
+		data = {spl:';', nrow:'/t', id: rowcount}
+	let newrow = new tr(data);
 	let trdom = newrow.UI();
 	$('#tbody')[0].appendChild(trdom);
+	newrow.init();
 	rows.push(newrow);
 	rowcount++;
-	$('input[type="file"]').on('change',function(){
-		let fileName = $(this).val();
-		if(fileName) {
-			$(this).removeClass('is-invalid');
-			$(this).next('.custom-file-label').html(fileName);
-		}
-	});
-	$('input[type="text"]').on('change', function () {
-		$(this)[0].value = $(this)[0].value.trim();
-		$(this).removeClass('is-invalid');
-	});
 }
 
 let d = new dlp();
@@ -43,10 +35,6 @@ function showPage(name) {
 	}
 }
 
-function validate() {
-
-}
-
 $(document).ready(()=> {
 	$('input[type="radio"]').change(function () {
 		if ($(this).is(':checked'))
@@ -58,38 +46,42 @@ $(document).ready(()=> {
 	});
 
 	$('#btn_start').click(async function () {
-		let path = $('#selected_path')[0].value;
-		if(isNullOrWhitespace(path))
+		let successful_uploads = 0;
+		let errors = 0;
+		let path = $('#selected_path').val();
+		if (isNullOrWhitespace(path))
 			$('#selected_path').addClass('is-invalid');
-		let rows_data = [];
+		let formDataArr = [];
 		let rows_valid = true;
 		rows.forEach((el) => {
-			if(el.validate()) {
-				let data = el.data();
-				rows_data.push(data);
+			if (el.isActive()) {
+				if (el.validate()) {
+					let data = el.data();
+					formDataArr.push(data);
+				}
+				else rows_valid = false;
 			}
-			else rows_valid = false;
 		});
-		if(!rows_valid || !path){
+		if (!rows_valid || !path) {
 			$(this).popover('show');
 			return;
 		}
-		let result = {rows_data, path};
-		console.log(result);
-		$.ajax({
-			url: '/process_files',
-			type: 'post',
-			data: result,
-			success: function (res) {
-				alert('Данные успешно обработаны');
-				console.log(res);
-			},
-			error: function (err) {
-				console.log(err);
-				alert('Произошла ошибка: ' + err.message);
-			}
+		let prevResp = null;
+		formDataArr.forEach(function (fd) {
+			fd.append('path', path);
 		});
+		uploadFD(formDataArr,
+			(success) => {
+				successful_uploads++;
+				$('#suc')[0].textContent = 'Составлено моделей: ' + successful_uploads
+			},
+			(error) => {
+				console.log(error);
+				errors++;
+				$('#err')[0].textContent = 'Ошибок: ' + errors;
+			});
 	});
+
 	$('#btn_start').popover({
 		placement: 'top',
 		content: 'Проверьте данные',
@@ -97,5 +89,6 @@ $(document).ready(()=> {
 	});
 	$('#btn_start').focusout(function () {
 		$(this).popover('hide');
+		$('input').removeClass('is-invalid');
 	});
 });

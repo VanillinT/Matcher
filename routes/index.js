@@ -1,16 +1,33 @@
-var express = require('express');
-var router = express.Router();
+let express = require('express');
+let router = express.Router();
+let fs = require('fs');
+let multer = require('multer');
 
-var multer = require('multer');
-var storage = multer.diskStorage({
+let countModels = countChildren('public/uploads');
+
+let storage = multer.diskStorage({
 	destination: (req, file, cb) => {
-		cb(null, 'public/uploads')
+		let dir = 'public/uploads/'+ countModels;
+		if(!fs.existsSync(dir))
+			fs.mkdirSync(dir);
+		cb(null, dir);
 	},
 	filename: (req, file, cb) => {
-		cb(null, file.fieldname + '-' + Date.now())
+		cb(null, file.originalname);
 	}
 });
-var upload = multer({ storage: storage });
+
+function countChildren(path) {
+	return getFilesList(path).length;
+}
+
+function getFilesList(path){
+	return fs.readdirSync(path).filter(function (file) {
+		return fs.statSync(path+'/'+file).isDirectory();
+	})
+}
+
+let upload = multer({ storage: storage });
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -18,23 +35,24 @@ router.get('/', function(req, res, next) {
 });
 
 router.post('/process_files', async function (req, res){
-    let {rows, path} = req.body;
-    let cnt = 0;
-    rows.forEach(async function (row) {
-    	await process({
-			template_file: row.selected_template,
-			data_file: row.selected_data,
-			row_splitter: row.selected_splitter,
-			new_row_splitter: row.selected_rowsym,
-			out_file: path
-		}).then((err, suc)=>{if(!err)cnt++;})
+	res.json(getFilesList('public/uploads'));
+	}
+);
+
+router.post('/upload', upload.array('files', 2), function (req, res) {
+	let dir = 'public/uploads/'+ countModels;
+	let spl = req.body.splitrow;
+	let nr = req.body.newrow;
+	let path = req.body.path;
+	let template = req.files[0];
+	let data = req.files[1];
+	let metastr = JSON.stringify({template, data, spl, nr, path});
+	fs.writeFile(dir + '/meta', metastr, 'utf8',(err) => {
+		if(!err) {
+			res.send('uploaded');
+		} else res.send(err);
 	});
-
-});
-
-router.post('/upload', upload.array('files'), async function (req, res) {
-	console.log(req.files);
-	res.json({'message': 'File uploaded successfully'});
+	countModels++;
 });
 
 async function process(template_file, data_file, row_splitter, new_row_splitter, out_file) {
