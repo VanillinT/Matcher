@@ -2,5 +2,9 @@ div{
     display: block;
 }
 .bmrk {
-  width:33.33%;
+  width:25%;
+}
+.icon{
+    height: 20px;
+    width: 20px;
 }

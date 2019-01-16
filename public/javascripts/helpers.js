@@ -2,11 +2,11 @@ function isNullOrWhitespace(input) {
 	if (typeof input === 'undefined' || input == null) return true;
 	return input.replace(/\s/g, '').length < 1;
 }
-function uploadFD(formDataArray, resolved, rejected) {
+async function uploadFD(formDataArray, resolved, rejected) {
 	if(!formDataArray[0])
 		return;
-	let formData=formDataArray.pop();
-	$.when($.ajax({
+	let formData = formDataArray.pop();
+	await $.when($.ajax({
 		url: '/upload',
 		enctype: 'multipart/form-data',
 		processData: false,
@@ -14,7 +14,9 @@ function uploadFD(formDataArray, resolved, rejected) {
 		contentType: false,
 		type: 'post',
 		data: formData
-	})).then(()=>resolved(),(err)=>rejected(err))
-		.then(()=>{
-		uploadFD(formDataArray, resolved, rejected)});
+	}))
+		.then((res)=>resolved(res), (err)=>rejected(err))
+			.then(async ()=> {
+				await uploadFD(formDataArray, resolved, rejected);
+			});
 }

@@ -1,0 +1,11 @@
+div#dup_container
+	div
+div.input-group.p-3
+	div
+		div.btn-group.btn-group-toggle.d-block.m-auto(data-toggle='buttons')#modetoggles
+			label.rounded-0.btn.btn-outline-secondary='Режим просмотра'
+				input#viewmoderadio(type='radio' name='view' autocomplete='off')
+			label.rounded-0.btn.btn-outline-secondary.active='Режим загрузки'
+				input#upmoderadio(type='radio' name='up' autocomplete='off' checked)
+	div.d-block
+		button.btn.btn-secondary.m-auto.position-absolute(type='button' style='right:30px')#btn_upload='Загрузить'

@@ -1,16 +1,15 @@
 extends layout
 block content
-	div.table-bordered.overflow-auto
-		div.btn-group.btn-group-toggle.d-block.m-auto(data-toggle='buttons')
-			label.rounded-0.bmrk.btn.btn-outline-secondary.active='Сопоставление шаблонов и данных'
-				input#option1(type='radio' name='dataloadpage' autocomplete='off' checked)
+	div.table-bordered.overflow-auto#main
+		div.btn-group.btn-group-toggle.d-block.m-auto(data-toggle='buttons')#pagetoggles
+			label.rounded-0.bmrk.btn.btn-outline-secondary.active='Загрузка и просмотр файлов'
+				input#option1(type='radio' name='datauploadpage' autocomplete='off' checked)
+			label.rounded-0.bmrk.btn.btn-outline-secondary='Сопоставление шаблонов и данных'
+				input#option2(type='radio' name='datalinkpage' autocomplete='off')
 			label.rounded-0.bmrk.btn.btn-outline-secondary='Статус'
-				input#option2(type='radio' name='statuspage' autocomplete='off')
+				input#option3(type='radio' name='statuspage' autocomplete='off')
 			label.rounded-0.bmrk.btn.btn-outline-secondary='Запуск модели'
-				input#option3(type='radio' name='launchpage' autocomplete='off')
-		div#content
+				input#option4(type='radio' name='launchpage' autocomplete='off')
+		div#content()
 			div
-	div.input-group-text.rounded-0
-		label.form-check-label#suc='Здесь будет инфа о загрузке моделей'
-		label.form-check-label.position-absolute(style='right:10px')#err
 	script(src='/javascripts/init.js')

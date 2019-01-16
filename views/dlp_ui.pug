@@ -1,20 +1,20 @@
 table.table.table-bordered.table-sm
-    thead
-        tr
-            th(scope='col')='#'
-            th(scope='col')='Шаблон'
-            th(scope='col')='Данные'
-            th(scope='col')='Разделитель'
-            th(scope='col')='Новая строка'
-            th(scope='col')='Активно'
-        tbody#tbody
+	thead
+		tr
+			th(scope='col')='#'
+			th(scope='col')='Шаблон'
+			th(scope='col')='Данные'
+			th(scope='col')='Разделитель'
+			th(scope='col')='Новая строка'
+			th(scope='col')='Активно'
+		tbody#tbody
 div
-    button.btn.btn-secondary.mx-auto.d-block(style='width:150px')#addrowbtn='+'
+	button.btn.btn-secondary.mx-auto.d-block(style='width:150px')#add_dtr='+'
 div.input-group.p-3
-    div
-        div.input-group(style='width:140%')
-            div.input-group-prepend
-                label.input-group-text='Целевой путь:'
-            input.form-control.rounded-0(type='text')#selected_path
-    div.d-block
-        button.btn.btn-secondary.m-auto.position-absolute(type='button' style='right:30px')#btn_start='Начать'
+	div
+		div.input-group(style='width:140%')
+			div.input-group-prepend
+				label.input-group-text='Целевой путь:'
+			input.form-control.rounded-0(type='text' value='app/Models')#selected_path
+	div.d-block
+		button.btn.btn-secondary.m-auto.position-absolute(type='button' style='right:30px')#btn_start='Начать'

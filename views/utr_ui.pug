@@ -1,0 +1,18 @@
+td
+	div.input-group
+		div.custom-file
+			input.custom-file-input(type='file' id='selected_file_' + locals.id)
+			label.custom-file-label.overflow-hidden(for='selected_file_' + locals.id)=locals.file ? locals.file.originalname : 'Выберите файл'
+td
+	div.input-group
+		input.form-control(type='text' value=(locals.file ? locals.file.originalname : '') id='selected_folder_' + locals.id readonly)
+		div.input-group-append
+			div.input-group-text(id='browse_folder_' + locals.id )
+				img(src='open-iconic/svg/magnifying-glass.svg').icon
+td
+	div.input-group
+		select.custom-select(id='selected_type_' + locals.id)
+			option(selected value='')='Выберите тип...'
+			option(value='Data')='Данные'
+			option(value='Templates')='Шаблон'
+			option(value='Models')='Модель'

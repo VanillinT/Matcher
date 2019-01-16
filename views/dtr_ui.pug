@@ -1,0 +1,23 @@
+td
+	div.input-group-text.rounded-0
+		label.form-check-label=locals.id + 1
+td
+	div.input-group
+		div.custom-file
+			input.custom-file-input(type='file' id='selected_template_'+locals.id)
+			label.custom-file-label.overflow-hidden(for='selected_template_'+locals.id)=locals.template ? locals.template.originalname : 'Шаблон не выбран'
+td
+	div.input-group
+		div.custom-file
+			input.custom-file-input(type='file' id='selected_data_' + locals.id)
+			label.custom-file-label.overflow-hidden(for='selected_data_' + locals.id)=locals.data ? locals.data.originalname : 'Данные не выбраны'
+td
+	div.input-group
+		input.form-control.rounded-0(type='text' id='selected_splitter_' + locals.id value=locals.spl)
+td
+	div.input-group
+		input.form-control.rounded-0(type='text' id='selected_rowsym_' + locals.id value=locals.nrow)
+td
+	div.input-group.d-block
+		div.input-group-text.d-block(for='selected_state_'+locals.id)
+			input(type='checkbox' id='selected_state_' + locals.id checked)

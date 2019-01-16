@@ -3,11 +3,9 @@ let router = express.Router();
 let fs = require('fs');
 let multer = require('multer');
 
-let countModels = countChildren('public/uploads');
-
 let storage = multer.diskStorage({
 	destination: (req, file, cb) => {
-		let dir = 'public/uploads/'+ countModels;
+		let dir = 'App/' + req.body.type;
 		if(!fs.existsSync(dir))
 			fs.mkdirSync(dir);
 		cb(null, dir);
@@ -17,42 +15,55 @@ let storage = multer.diskStorage({
 	}
 });
 
+let upload = multer({storage : storage});
+
 function countChildren(path) {
-	return getFilesList(path).length;
+	return getFoldersList(path).length;
 }
 
-function getFilesList(path){
+function getFoldersList(path) {
 	return fs.readdirSync(path).filter(function (file) {
 		return fs.statSync(path+'/'+file).isDirectory();
 	})
 }
 
-let upload = multer({ storage: storage });
+function getFilesList(path) {
+	return fs.readdirSync(path);
+}
 
 /* GET home page. */
-router.get('/', function(req, res, next) {
-    res.render('index');
+router.get('/', async function(req, res, next) {
+	res.render('index');
 });
 
-router.post('/process_files', async function (req, res){
-	res.json(getFilesList('public/uploads'));
-	}
-);
+router.get('/getAppContent', (req, res) => {
+	let content = getAppContent();
+	res.send({content});
+});
 
-router.post('/upload', upload.array('files', 2), function (req, res) {
-	let dir = 'public/uploads/'+ countModels;
-	let spl = req.body.splitrow;
-	let nr = req.body.newrow;
-	let path = req.body.path;
-	let template = req.files[0];
-	let data = req.files[1];
-	let metastr = JSON.stringify({template, data, spl, nr, path});
-	fs.writeFile(dir + '/meta', metastr, 'utf8',(err) => {
-		if(!err) {
-			res.send('uploaded');
-		} else res.send(err);
-	});
-	countModels++;
+function getAppContent(){
+	let root = 'App/';
+	let folders = getFoldersList(root);
+	let content = [];
+	for(let fol of folders) {
+		let folder = {name: fol, files: []};
+		let files = getFilesList(root + fol);
+		for(let fil of files){
+			let file = {name: fil};
+			folder.files.push(file);
+		}
+		content.push(folder);
+	}
+	return content;
+}
+
+router.post('/process_files', async function (req, res){
+	res.json(getFoldersList('public/uploads'));
+});
+
+router.post('/upload', upload.single('file'), function (req, res) {
+	let file = req.file;
+	res.send(file.originalname + ' загружен в ' + file.destination);
 });
 
 async function process(template_file, data_file, row_splitter, new_row_splitter, out_file) {
