@@ -1,6 +1,7 @@
 //pug ./dup_upmode_ui.pug -c -n dup_upmode_ui -D -o ../public/jsviews
 
 function dup_upmode() {
+	let This = this;
 
 	let dom = null;
 
@@ -21,6 +22,8 @@ function dup_upmode() {
 		parent.replaceChild(dom, parent.firstChild);
 		init();
 	};
+
+	this.onupload = null;
 
 	let newRow = (row) => {
 		if(!row)
@@ -52,15 +55,39 @@ function dup_upmode() {
 		});
 
 		$('#btn_upload').click(async function () {
-			let data = getFormedData();
-			if(!data) return;
-			await uploadFD(data,
-				function (res) {
-					console.log(res);
-				},
-				function (err) {
-					console.log(err);
-				});
+			let validRows = rows.filter(row=>row.validate());
+			validRows.forEach(async (row)=>{
+				let container = $('#tbody')[0];
+				let formData = row.formData();
+				if(formData) {
+					await $.when($.ajax({
+						url: '/upload',
+						enctype: 'multipart/form-data',
+						processData: false,
+						cache: false,
+						contentType: false,
+						type: 'post',
+						data: formData
+					}))
+						.then((res) => {
+							row.UI().innerHTML = res;
+							if (This.onupload) {
+								This.onupload();
+							}
+							setTimeout(function () {
+								row.delete(container);
+							}, 5000);
+						}, (err) => {
+							row.UI().innerHTML = 'Файл не смог быть загружен. Ошибка: ' + err;
+							setTimeout(function () {
+								row.delete(container);
+							}, 5000);
+						});
+				} else rows.push(row);
+			});
+			validRows.forEach((el) => {
+				rows = rows.filter(row => row != el);
+			});
 		});
 
 

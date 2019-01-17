@@ -26,7 +26,7 @@ function datauploadpage(params) {
 		init();
 	};
 
-	let togglemode = () => {
+	let toggleMode = () => {
 		switch (currentMode) {
 			case 'up':
 				dup_view.putInto(container());
@@ -52,13 +52,14 @@ function datauploadpage(params) {
 			success: function (res) {
 				dup_view = new dup_viewmode();
 				dup_view.UI(res);
+				dup_up.onupload = dup_view.refresh;
 			}
 		});
 
 
 		$('#modetoggles input[type="radio"]').change(function () {
 			if ($(this).is(':checked')) {
-				togglemode();
+				toggleMode();
 			}
 		});
 

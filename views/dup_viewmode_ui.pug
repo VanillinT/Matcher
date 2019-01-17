@@ -12,15 +12,18 @@ div.px-5
 						label.px-2.m-auto=folder.name
 				div.mx-4
 					each file, j in folder.files
-						table.table.table-hover.table-borderless.table-sm.m-0
+						table.table.table-hover.table-borderless.table-sm.m-0(id='row_' + i + j)
 							tbody.d-inline
-								tr(id='row_' + i + j)
+								tr
 									th.d-inline-block
 										img(src='open-iconic/svg/file.svg').icon
 									th.d-inline-block
 										label.m-auto=file.name
 									th.d-none(id='controls_for_row_' + i + j)
 										div.d-inline-block
-											img.mx-1(src='open-iconic/svg/eye.svg').icon
-											img.mx-1(src='open-iconic/svg/data-transfer-download.svg').icon
-											img.mx-1(src='open-iconic/svg/trash.svg').icon
+											button.btn.btn-sm.p-0.border-0(onclick='viewFile("' + file.path + '",' + '"row_' + i + j + '")')
+												img(src='open-iconic/svg/eye.svg').icon
+											button.btn.btn-sm.p-0.border-0.mx-1(onclick='downloadFile("' + file.name + '","' + file.root +'")')
+												img(src='open-iconic/svg/data-transfer-download.svg').icon
+											button.btn.btn-sm.p-0.border-0(onclick='deleteFile("' + file.fullpath + '",' + '"row_' + i + j + '")')
+												img(src='open-iconic/svg/trash.svg').icon

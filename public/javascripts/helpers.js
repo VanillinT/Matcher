@@ -20,3 +20,36 @@ async function uploadFD(formDataArray, resolved, rejected) {
 				await uploadFD(formDataArray, resolved, rejected);
 			});
 }
+
+function deleteFile(path, elementid) {
+	let data = {path};
+	$.ajax({
+		url:'/delete',
+		type: 'post',
+		data: data,
+		success: function (res) {
+			console.log(res);
+			$('#' + elementid).remove();
+		}
+	});
+}
+
+function downloadFile(filename, root) {
+	let data = {filename, root};
+	$.ajax({
+		url:'/download',
+		type: 'post',
+		data: data,
+		xhrFields: {
+			responseType: 'blob'
+		},
+		success: function (data) {
+			var a = document.createElement('a');
+			var url = window.URL.createObjectURL(data);
+			a.href = url;
+			a.download = filename;
+			a.click();
+			window.URL.revokeObjectURL(url);
+		}
+	});
+}

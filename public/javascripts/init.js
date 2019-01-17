@@ -27,6 +27,8 @@ function showPage(name) {
 }
 
 $(document).ready(()=> {
+	$('#main').height($(document).height());
+
 	$('#pagetoggles input[type="radio"]').change(function () {
 		if ($(this).is(':checked'))
 			showPage($(this).prop('name'));

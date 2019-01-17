@@ -49,7 +49,7 @@ function getAppContent(){
 		let folder = {name: fol, files: []};
 		let files = getFilesList(root + fol);
 		for(let fil of files){
-			let file = {name: fil};
+			let file = {name: fil, root:root + fol, fullpath: root + fol + '/' + fil};
 			folder.files.push(file);
 		}
 		content.push(folder);
@@ -59,6 +59,18 @@ function getAppContent(){
 
 router.post('/process_files', async function (req, res){
 	res.json(getFoldersList('public/uploads'));
+});
+
+router.post('/delete', async function (req, res) {
+	fs.unlink(req.body.path, (err)=>{
+		if(err) return err;
+
+		res.send('Файл успешно удалён');
+	});
+});
+
+router.post('/download', async function (req, res) {
+	res.sendFile(req.body.filename, {root: req.body.root});
 });
 
 router.post('/upload', upload.single('file'), function (req, res) {

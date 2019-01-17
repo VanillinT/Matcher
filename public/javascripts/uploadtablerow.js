@@ -31,7 +31,7 @@ function uploadtablerow(params) {
 		let fd = new FormData();
 	};
 
-	let validate = () => {
+	this.validate = () => {
 		let valid = true;
 		[sfile(), st()].forEach(function (el) {
 				if ((el.type === 'file' && !el[0].files[0]) || isNullOrWhitespace(el.val())) {
@@ -43,11 +43,15 @@ function uploadtablerow(params) {
 	};
 
 	this.formData = () => {
-		if(!validate()) return;
 		let fd = new FormData();
 		fd.append('type', selected_type);
 		fd.append('file', selected_file);
 		return fd;
+	};
+
+	this.delete = (parent) => {
+		parent.removeChild(dom);
+		delete this;
 	};
 
 	let init = () => {
