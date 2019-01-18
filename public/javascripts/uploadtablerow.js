@@ -2,6 +2,7 @@
 function uploadtablerow(params) {
 
 	let id = params.id;
+	this.id = () => id;
 
 	let dom = null;
 
@@ -50,7 +51,7 @@ function uploadtablerow(params) {
 	};
 
 	this.delete = (parent) => {
-		parent.removeChild(dom);
+		$(dom).remove();
 		delete this;
 	};
 

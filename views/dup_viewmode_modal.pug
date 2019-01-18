@@ -1,0 +1,13 @@
+div.modal.fade(tabindex=-1 role='dialog' aria-hidden=true)
+	div.modal-dialog(role='document')
+		div.modal-content
+			div.modal-header
+				h5='Просмотр файла ' + locals.filename
+				button.close(type='button' data-dismiss='modal' aria-label='Close')
+					span(aria-hidden=true)='╳'
+			div.modal-body
+				div#text_box=locals.text
+			div.modal-footer
+				button.btn.btn-secondary(type='button' data-dismiss='modal')='Закрыть'
+				button.btn.btn-primary(type='button')#btn_edit='Изменить'
+				button.btn.btn-primary(type='button')#btn_save='Сохранить'

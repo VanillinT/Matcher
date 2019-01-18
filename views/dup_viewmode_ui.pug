@@ -1,4 +1,4 @@
-div.px-5
+div.p-5
 	div.d-block
 		div.media
 			img.align-self-center(src='open-iconic/svg/folder.svg').icon
@@ -13,7 +13,7 @@ div.px-5
 				div.mx-4
 					each file, j in folder.files
 						table.table.table-hover.table-borderless.table-sm.m-0(id='row_' + i + j)
-							tbody.d-inline
+							tbody
 								tr
 									th.d-inline-block
 										img(src='open-iconic/svg/file.svg').icon
@@ -21,7 +21,7 @@ div.px-5
 										label.m-auto=file.name
 									th.d-none(id='controls_for_row_' + i + j)
 										div.d-inline-block
-											button.btn.btn-sm.p-0.border-0(onclick='viewFile("' + file.path + '",' + '"row_' + i + j + '")')
+											button.btn.btn-sm.p-0.border-0(onclick='viewFile("' + file.name + '","' + file.fullpath +'")')
 												img(src='open-iconic/svg/eye.svg').icon
 											button.btn.btn-sm.p-0.border-0.mx-1(onclick='downloadFile("' + file.name + '","' + file.root +'")')
 												img(src='open-iconic/svg/data-transfer-download.svg').icon

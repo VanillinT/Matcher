@@ -75,12 +75,12 @@ function dup_upmode() {
 								This.onupload();
 							}
 							setTimeout(function () {
-								row.delete(container);
+								row.delete();
 							}, 5000);
 						}, (err) => {
 							row.UI().innerHTML = 'Файл не смог быть загружен. Ошибка: ' + err;
 							setTimeout(function () {
-								row.delete(container);
+								row.delete();
 							}, 5000);
 						});
 				} else rows.push(row);

@@ -70,7 +70,14 @@ router.post('/delete', async function (req, res) {
 });
 
 router.post('/download', async function (req, res) {
-	res.sendFile(req.body.filename, {root: req.body.root});
+	await res.sendFile(req.body.filename, {root: req.body.root});
+});
+
+router.post('/getContent', async function (req, res) {
+	await fs.readFile(req.body.path, 'utf8', function (err, content) {
+		if(err) return console.log(err);
+		res.send(content);
+	});
 });
 
 router.post('/upload', upload.single('file'), function (req, res) {

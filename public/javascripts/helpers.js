@@ -53,3 +53,21 @@ function downloadFile(filename, root) {
 		}
 	});
 }
+
+async function viewFile(filename, path) {
+	let data = {path};
+	await $.ajax({
+		url: '/getContent',
+		type: 'post',
+		data: data,
+		success: function (res) {
+			let modaldom = dup_viewmode_modal({filename, text: res});
+			$('#main').append(modaldom);
+			$(modaldom).modal('show');
+			$('#btn_edit').click(function () {
+				console.log('meme');
+				$('#text_box').prop('contenteditable', true);
+			});
+		}
+	});
+}
