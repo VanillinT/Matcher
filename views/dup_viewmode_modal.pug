@@ -1,5 +1,5 @@
 div.modal.fade(tabindex=-1 role='dialog' aria-hidden=true)
-	div.modal-dialog(role='document')
+	div.modal-dialog.modal-lg(role='document')
 		div.modal-content
 			div.modal-header
 				h5='Просмотр файла ' + locals.filename
@@ -8,6 +8,6 @@ div.modal.fade(tabindex=-1 role='dialog' aria-hidden=true)
 			div.modal-body
 				div#text_box=locals.text
 			div.modal-footer
-				button.btn.btn-secondary(type='button' data-dismiss='modal')='Закрыть'
-				button.btn.btn-primary(type='button')#btn_edit='Изменить'
-				button.btn.btn-primary(type='button')#btn_save='Сохранить'
+				button.btn.btn-secondary(data-dismiss='modal')='Закрыть'
+				button.btn.btn-primary#btn_edit='Изменить'
+				button.btn.btn-primary()#btn_save='Сохранить'

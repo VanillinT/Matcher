@@ -1,5 +1,5 @@
 //pug ./dup_viewmode_ui.pug -c -n dup_viewmode_ui -D -o ../public/jsviews
-
+//pug ./dup_viewmode_modal.pug -c -n dup_viewmode_modal -D -o ../public/jsviews
 function dup_viewmode() {
 
 	let dom = null;

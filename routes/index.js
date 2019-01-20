@@ -42,12 +42,12 @@ router.get('/getAppContent', (req, res) => {
 });
 
 function getAppContent(){
-	let root = 'App/';
-	let folders = getFoldersList(root);
-	let content = [];
+	let root = 'App/',
+		folders = getFoldersList(root),
+		content = [];
 	for(let fol of folders) {
-		let folder = {name: fol, files: []};
-		let files = getFilesList(root + fol);
+		let folder = {name: fol, files: []},
+			files = getFilesList(root + fol);
 		for(let fil of files){
 			let file = {name: fil, root:root + fol, fullpath: root + fol + '/' + fil};
 			folder.files.push(file);
@@ -65,7 +65,7 @@ router.post('/delete', async function (req, res) {
 	fs.unlink(req.body.path, (err)=>{
 		if(err) return err;
 
-		res.send('Файл успешно удалён');
+		res.send(req.body.path + ' успешно удалён');
 	});
 });
 
@@ -75,7 +75,7 @@ router.post('/download', async function (req, res) {
 
 router.post('/getContent', async function (req, res) {
 	await fs.readFile(req.body.path, 'utf8', function (err, content) {
-		if(err) return console.log(err);
+		if (err) return console.log(err);
 		res.send(content);
 	});
 });
@@ -83,6 +83,16 @@ router.post('/getContent', async function (req, res) {
 router.post('/upload', upload.single('file'), function (req, res) {
 	let file = req.file;
 	res.send(file.originalname + ' загружен в ' + file.destination);
+});
+
+router.post('/writeFile', function (req,res) {
+	let path = req.body.path,
+		text = req.body.text;
+	fs.writeFile(path, text, function (err) {
+		if(err) return res.send(err);
+
+		res.send('Файл был успешно изменён');
+	});
 });
 
 async function process(template_file, data_file, row_splitter, new_row_splitter, out_file) {

@@ -20,7 +20,7 @@ div.p-5
 									th.d-inline-block
 										label.m-auto=file.name
 									th.d-none(id='controls_for_row_' + i + j)
-										div.d-inline-block
+										div
 											button.btn.btn-sm.p-0.border-0(onclick='viewFile("' + file.name + '","' + file.fullpath +'")')
 												img(src='open-iconic/svg/eye.svg').icon
 											button.btn.btn-sm.p-0.border-0.mx-1(onclick='downloadFile("' + file.name + '","' + file.root +'")')

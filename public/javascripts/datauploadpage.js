@@ -58,8 +58,6 @@ function datauploadpage(params) {
 
 		$('#dup_container').height($(document).outerHeight() - $('#footer').outerHeight() - $('#pagetoggles').outerHeight());
 
-		console.log($('#dup_container').height());
-
 		$('#modetoggles input[type="radio"]').change(function () {
 			if ($(this).is(':checked')) {
 				toggleMode();

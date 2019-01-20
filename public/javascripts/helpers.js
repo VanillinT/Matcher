@@ -44,8 +44,8 @@ function downloadFile(filename, root) {
 			responseType: 'blob'
 		},
 		success: function (data) {
-			var a = document.createElement('a');
-			var url = window.URL.createObjectURL(data);
+			let a = document.createElement('a');
+			let url = window.URL.createObjectURL(data);
 			a.href = url;
 			a.download = filename;
 			a.click();
@@ -61,13 +61,32 @@ async function viewFile(filename, path) {
 		type: 'post',
 		data: data,
 		success: function (res) {
-			let modaldom = dup_viewmode_modal({filename, text: res});
-			$('#main').append(modaldom);
-			$(modaldom).modal('show');
-			$('#btn_edit').click(function () {
-				console.log('meme');
-				$('#text_box').prop('contenteditable', true);
-			});
+			let modal = dup_viewmode_modal({filename, text: res});
+			$(modal)
+				.on('hidden.bs.modal', function (e) {
+					$(this).remove();
+				})
+				.on('shown.bs.modal', function (e) {
+					$('#btn_edit').click(function () {
+						$('#text_box').attr('contenteditable', true).focus();
+					});
+					$('#btn_save').click(function () {
+						$('#text_box').attr('contenteditable', false);
+						let text = $('#text_box').text();
+						$.ajax({
+							url:'/writeFile',
+							type:'post',
+							data: {path, text},
+							success: function (res) {
+								alert(res);
+							},
+							error: function (err) {
+								console.log(err);
+							}
+						})
+					});
+				})
+				.modal();
 		}
 	});
 }
