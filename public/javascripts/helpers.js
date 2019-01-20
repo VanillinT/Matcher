@@ -54,7 +54,7 @@ function downloadFile(filename, root) {
 	});
 }
 
-async function viewFile(filename, path) {
+async function viewFile(filename, path, type) {
 	let data = {path};
 	await $.ajax({
 		url: '/getContent',
@@ -73,10 +73,18 @@ async function viewFile(filename, path) {
 					$('#btn_save').click(function () {
 						$('#text_box').attr('contenteditable', false);
 						let text = $('#text_box').text();
+						var fd = new FormData();
+						var blob = new Blob([text], { type: 'plain/text' });
+						fd.append('type', type);
+						fd.append('file', blob, filename);
 						$.ajax({
-							url:'/writeFile',
-							type:'post',
-							data: {path, text},
+							url: '/upload',
+							enctype: 'multipart/form-data',
+							processData: false,
+							cache: false,
+							contentType: false,
+							type: 'post',
+							data: fd,
 							success: function (res) {
 								alert(res);
 							},

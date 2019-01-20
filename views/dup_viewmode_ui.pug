@@ -21,7 +21,7 @@ div.p-5
 										label.m-auto=file.name
 									th.d-none(id='controls_for_row_' + i + j)
 										div
-											button.btn.btn-sm.p-0.border-0(onclick='viewFile("' + file.name + '","' + file.fullpath +'")')
+											button.btn.btn-sm.p-0.border-0(onclick='viewFile("' + file.name + '","' + file.fullpath +'","' + folder.name + '")')
 												img(src='open-iconic/svg/eye.svg').icon
 											button.btn.btn-sm.p-0.border-0.mx-1(onclick='downloadFile("' + file.name + '","' + file.root +'")')
 												img(src='open-iconic/svg/data-transfer-download.svg').icon
