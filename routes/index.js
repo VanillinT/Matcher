@@ -41,6 +41,12 @@ router.get('/getAppContent', (req, res) => {
 	res.send({content});
 });
 
+router.post('/getFolder', (req,res)=>{
+	let type = req.body.type, files = getFilesList('App/' + req.body.type);
+	console.log(files);
+	res.send({type, files});
+});
+
 function getAppContent(){
 	let root = 'App/',
 		folders = getFoldersList(root),

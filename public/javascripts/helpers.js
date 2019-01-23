@@ -60,8 +60,8 @@ async function viewFile(filename, path, type) {
 		url: '/getContent',
 		type: 'post',
 		data: data,
-		success: function (res) {
-			let modal = dup_viewmode_modal({filename, text: res});
+		success: function (text) {
+			let modal = dup_viewmode_modal({filename, text});
 			$(modal)
 				.on('hidden.bs.modal', function (e) {
 					$(this).remove();

@@ -45,7 +45,6 @@ function datauploadpage(params) {
 		if(initialized) return;
 
 		dup_up.UI();
-		dup_up.putInto(container());
 
 		$.ajax('/getAppContent', {
 			type: 'get',
@@ -53,6 +52,7 @@ function datauploadpage(params) {
 				dup_view = new dup_viewmode();
 				dup_view.UI(res);
 				dup_up.onupload = dup_view.refresh;
+				toggleMode();
 			}
 		});
 
@@ -66,54 +66,4 @@ function datauploadpage(params) {
 
 		initialized = true;
 	};
-
-	/*$.ajax('/getInit', {
-		success: function (res) {
-			let rowsdata = res;
-			rowcount = rowsdata.length;
-			rowsdata.forEach((row)=>{
-				newRow(row);
-			});
-		}});
-
-
-
-	$('#btn_upload').click(async function () {
-		let successful_uploads = 0;
-		let errors = 0;
-		let path = $('#selected_path').val();
-		if (isNullOrWhitespace(path))
-			$('#selected_path').addClass('is-invalid');
-		let formDataArr = [];
-		let rows_valid = true;
-		rows.forEach((el) => {
-			if (el.isActive()) {
-				if (el.validate()) {
-					let data = el.data();
-					formDataArr.push(data);
-				}
-				else rows_valid = false;
-			}
-		});
-		if (!rows_valid || !path) {
-			$(this).popover('show');
-			return;
-		}
-		let prevResp = null;
-		formDataArr.forEach(function (fd) {
-			fd.append('path', path);
-		});
-		uploadFD(formDataArr,
-			(success) => {
-				successful_uploads++;
-				$('#suc')[0].textContent = 'Составлено моделей: ' + successful_uploads
-			},
-			(error) => {
-				console.log(error);
-				errors++;
-				$('#err')[0].textContent = 'Ошибок: ' + errors;
-			});
-	});
-
-	*/
 }

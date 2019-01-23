@@ -28,7 +28,7 @@ function dup_upmode() {
 	let newRow = (row) => {
 		if(!row)
 			row = {spl:';', nrow:'/t', id: rows.length};
-		let newrow = new uploadtablerow(row);
+		let newrow = new dup_tablerow(row);
 		newrow.UI();
 		newrow.putInto($('#tbody')[0]);
 		rows.push(newrow);

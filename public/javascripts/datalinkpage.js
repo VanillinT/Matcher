@@ -26,7 +26,7 @@ function datalinkpage(params) {
 	let newRow = (row) => {
 		if(!row)
 			row = {spl:';', nrow:'/t', id: rows.length};
-		let newrow = new datatablerow(row);
+		let newrow = new dl_tablerow(row);
 		newrow.UI();
 		newrow.putInto($('#tbody')[0]);
 		rows.push(newrow);
@@ -35,55 +35,13 @@ function datalinkpage(params) {
 	let init = () => {
 		if(initialized) return;
 
-		/*$.ajax('/getInit', {
-			success: function (res) {
-				let rowsdata = res;
-				rowcount = rowsdata.length;
-				rowsdata.forEach((row) => {
-					newRow(row);
-				});
-			}
-		});*/
-
 		$('#add_dtr').click(() => {
 			newRow();
 		});
 
 
 		$('#btn_start').click(async function () {
-			let successful_uploads = 0;
-			let errors = 0;
-			let path = sp().val();
-			if (isNullOrWhitespace(path))
-				sp().addClass('is-invalid');
-			let formDataArr = [];
-			let rows_valid = true;
-			rows.forEach((el) => {
-				if (el.isActive()) {
-					if (el.validate()) {
-						let data = el.data();
-						formDataArr.push(data);
-					}
-					else rows_valid = false;
-				}
-			});
-			if (!rows_valid || !path) {
-				$(this).popover('show');
-				return;
-			}
-			formDataArr.forEach(function (fd) {
-				fd.append('path', path);
-			});
-			uploadFD(formDataArr,
-				(success) => {
-					successful_uploads++;
-					$('#suc')[0].textContent = 'Составлено моделей: ' + successful_uploads
-				},
-				(error) => {
-					console.log(error);
-					errors++;
-					$('#err')[0].textContent = 'Ошибок: ' + errors;
-				});
+
 		});
 
 		$('#btn_start').popover({

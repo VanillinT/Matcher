@@ -1,5 +1,5 @@
 //pug ./utr_ui.pug -c -n utr_ui -D -o ../public/jsviews
-function uploadtablerow(params) {
+function dup_tablerow(params) {
 
 	let id = params.id;
 	this.id = () => id;
