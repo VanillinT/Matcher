@@ -2,59 +2,72 @@
 //pug ./file_list_modal.pug -c -n file_list_modal -D -o ../public/jsviews
 function dl_tablerow(params) {
 
-	let id = params.id;
+	let id = params.id,
 
-	let dom = null;
+		dom = null,
 
-	let selected_template = null;
-	let selected_data = null;
-	let selected_splitter = null;
-	let selected_rowsym = null;
-	let selected_state = false;
+		data = null,
 
-	let st = () =>  $('#browse_temp_' + id);
-	let sd = () => $('#browse_data_' + id);
-	let ss = () => $('#selected_splitter_'+id);
-	let sr = () => $('#selected_rowsym_'+id);
+		st = () => $('#selected_template_' + id),
+		sd = () => $('#selected_data_' + id),
+		ss = () => $('#selected_splitter_' + id),
+		sr = () => $('#selected_rowsym_' + id),
 
-	this.isActive = () => $('#selected_state_' + id).prop('checked');
+		isActive = () => $('#selected_state_' + id).prop('checked'),
 
-	this.UI = () => {
-		if(!dom) {
-			dom = document.createElement('tr');
-			dom.innerHTML = dtr_ui(params);
-		}
-		return dom;
-	};
-
-	this.putInto = function(parent) {
-		parent.append(dom);
-		init();
-	};
-
-	let init = () => {
-		st().on('click', async function (e) {
-			e.preventDefault();
-			await showModal($('#selected_template_' + id), 'Templates');
-		});
-		sd().on('click', async function (e) {
-			e.preventDefault();
-			await showModal($('#selected_data_' + id), 'Data');
-		});
-		[ss(), sr()].forEach((el)=>{
-			el.on('change', function () {
-				$(this).val($(this).val().trim());
-				$(this).removeClass('is-invalid');
+		init = () => {
+			$('#browse_temp_' + id).on('click', async function (e) {
+				e.preventDefault();
+				await showModal(st(), 'Templates');
 			});
-		});
+			$('#browse_data_' + id).on('click', async function (e) {
+				e.preventDefault();
+				await showModal(sd(), 'Data');
+			});
+			[ss(), sr()].forEach((el) => {
+				el.on('change', function () {
+					$(this).val($(this).val().trim());
+					$(this).removeClass('is-invalid');
+				});
+			});
+		},
+
+		buildUI = () => {
+			dom = $(dtr_ui(params));
+		};
+
+	this.data = () => {
+		return data;
 	};
 
-	this.data= () => null;
+	this.validate = function (error) {
+		let valid = isActive();
 
-	this.validate = function() {
-		let valid = selected_state = $('#selected_state_'+id)[0].checked;
+		if (valid) {
+			[st(), sd(), ss(), sr()].forEach(function (el) {
+				if (isNullOrWhitespace(el.val())) {
+					el.addClass('is-invalid');
+					valid = false;
+				}
+			});
 
+			if (!valid) error();
+			else {
+				data = {
+					template_file: st().val(),
+					data_file: sd().val(),
+					row_splitter: ss().val(),
+					new_row_splitter: sr().val()
+				}
+			}
+		}
 		return valid;
+	};
+
+
+	this.putInto = function (parent) {
+		if (!dom) buildUI();
+		$.when(parent.append(dom)).then(init);
 	};
 
 	async function showModal(el, type) {
@@ -65,10 +78,10 @@ function dl_tablerow(params) {
 			success: function ({type, files}) {
 				let modal = file_list_modal({type, files});
 				$(modal)
-					.on('hidden.bs.modal', function (e) {
+					.on('hidden.bs.modal', function () {
 						$(this).remove();
 					})
-					.on('shown.bs.modal', function (e) {
+					.on('shown.bs.modal', function () {
 						let mod = $(this);
 						$('#file_list').hover(function () {
 							$(this).css('cursor', 'pointer')
@@ -76,7 +89,8 @@ function dl_tablerow(params) {
 							$(this).css('cursor', 'default')
 						});
 						$('#file_list tr td').click(function () {
-							el.text($(this).text());
+							el.val($(this).text());
+							el.removeClass('is-invalid');
 							mod.modal('hide');
 						});
 					})

@@ -1,60 +1,65 @@
 //pug ./dlp_ui.pug -c -n dlp_ui -D -o ../public/jsviews
 function datalinkpage(params) {
 
-	let dom = null;
+	let dom = null,
 
-	let initialized = false;
+		rows = [],
 
-	let rows = [];
+		sel_path = () => $('#selected_path').val(),
 
-	let sp = () => $('#selected_path');
+		newRow = (row) => {
+			if (!row)
+				row = {spl: ';', nrow: '/t', id: rows.length};
+			let newrow = new dl_tablerow(row);
+			newrow.putInto($('#tbody'));
+			rows.push(newrow);
+		},
 
-	this.UI = function () {
-		if(!dom) {
-			dom = document.createElement('div')
-			dom.innerHTML = dlp_ui(params);
+		init = () => {
+			$('#add_dtr').click(() => {
+				newRow();
+			});
+
+
+			$('#btn_start')
+				.click(async function () {
+					let btn = $(this),
+						valid_rows = rows.filter(row => row.validate(function () {
+							btn.popover('show');
+						})),
+						fd = new FormData(),
+						data = [];
+					if (!valid_rows[0]) return;
+
+					for (let row of valid_rows) {
+						let rd = row.data();
+						rd.out_dir = sel_path();
+						data.push(rd);
+					}
+					data = JSON.stringify(data);
+					$.post({
+						url: '/process_files',
+						data: {data}
+					});
+				})
+				.popover({
+					placement: 'top',
+					content: 'Проверьте данные',
+					trigger: 'manual'
+				})
+				.focusout(function () {
+					$(this).popover('hide');
+					$('input').removeClass('is-invalid');
+				});
+		},
+
+		buildUI = () => {
+			dom = $(dlp_ui(params));
 			dom.id = 'datalinkpage';
-		}
-		return dom;
+		};
+
+	this.putInto = (target) => {
+		if (!dom) buildUI();
+		$.when(target.children(':first').replaceWith(dom)).then(init);
 	};
-
-	this.putInto = (parent) => {
-		parent.replaceChild(dom, parent.firstChild);
-		init();
-	};
-
-	let newRow = (row) => {
-		if(!row)
-			row = {spl:';', nrow:'/t', id: rows.length};
-		let newrow = new dl_tablerow(row);
-		newrow.UI();
-		newrow.putInto($('#tbody')[0]);
-		rows.push(newrow);
-	};
-
-	let init = () => {
-		if(initialized) return;
-
-		$('#add_dtr').click(() => {
-			newRow();
-		});
-
-
-		$('#btn_start').click(async function () {
-
-		});
-
-		$('#btn_start').popover({
-			placement: 'top',
-			content: 'Проверьте данные',
-			trigger: 'manual'
-		});
-
-		$('#btn_start').focusout(function () {
-			$(this).popover('hide');
-			$('input').removeClass('is-invalid');
-		});
-
-		initialized = true;
-	}
 }

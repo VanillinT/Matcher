@@ -1,15 +1,12 @@
-let u = new datauploadpage();
-let udom = u.UI();
-let d = new datalinkpage();
-let ddom = d.UI();
-let s = new statuspage();
-let sdom = s.UI();
-let l = new launchpage();
-let ldom = l.UI();
+let u = new datauploadpage(),
+	d = new datalinkpage(),
+	s = new statuspage(),
+	l = new launchpage();
+
 showPage('initial');
 
 function showPage(name) {
-	let contendDOM = $('#content')[0];
+	let contendDOM = $('#content');
 	switch(name) {
 		case 'statuspage':
 			s.putInto(contendDOM);

@@ -75,6 +75,7 @@ async function viewFile(filename, path, type) {
 						let text = $('#text_box').text();
 						var fd = new FormData();
 						var blob = new Blob([text], { type: 'plain/text' });
+						fd.append('reupload', 'true');
 						fd.append('type', type);
 						fd.append('file', blob, filename);
 						$.ajax({

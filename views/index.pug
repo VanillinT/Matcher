@@ -1,14 +1,14 @@
 extends layout
 block content
 	div.table-bordered#main
-		div.btn-group.btn-group-toggle.d-block.m-auto.sticky-top(data-toggle='buttons')#pagetoggles
-			label.rounded-0.bmrk.btn.btn-outline-secondary.active='Загрузка и просмотр файлов'
+		div.btn-group.btn-group-toggle.m-auto.sticky-top.w-100(data-toggle='buttons')#pagetoggles
+			label.col.rounded-0.btn.btn-outline-secondary.active='Загрузка и просмотр файлов'
 				input#option1(type='radio' name='datauploadpage' autocomplete='off' checked)
-			label.rounded-0.bmrk.btn.btn-outline-secondary='Сопоставление шаблонов и данных'
+			label.col.rounded-0.btn.btn-outline-secondary='Сопоставление шаблонов и данных'
 				input#option2(type='radio' name='datalinkpage' autocomplete='off')
-			label.rounded-0.bmrk.btn.btn-outline-secondary='Статус'
+			label.col.rounded-0.btn.btn-outline-secondary='Статус'
 				input#option3(type='radio' name='statuspage' autocomplete='off')
-			label.rounded-0.bmrk.btn.btn-outline-secondary='Запуск модели'
+			label.col.rounded-0.btn.btn-outline-secondary='Запуск модели'
 				input#option4(type='radio' name='launchpage' autocomplete='off')
 		div#content()
 			div

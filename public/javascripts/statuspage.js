@@ -1,16 +1,19 @@
 function statuspage() {
 
-	let dom = null;
+	let dom = null,
 
-	this.UI = function () {
-		if(!dom) {
+		buildUI = () => {
 			dom = document.createElement('div')
 			dom.id = 'statuspage';
-		}
-		return dom;
-	};
 
-	this.putInto = (parent) => {
-		parent.replaceChild(dom, parent.firstChild)
+			return dom;
+		},
+		init = () => {
+
+		};
+	this.putInto = (target) => {
+		if (!dom) buildUI();
+		target.children(':first').replaceWith(dom);
+		init();
 	};
 }

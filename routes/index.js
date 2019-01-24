@@ -43,7 +43,6 @@ router.get('/getAppContent', (req, res) => {
 
 router.post('/getFolder', (req,res)=>{
 	let type = req.body.type, files = getFilesList('App/' + req.body.type);
-	console.log(files);
 	res.send({type, files});
 });
 
@@ -62,10 +61,6 @@ function getAppContent(){
 	}
 	return content;
 }
-
-router.post('/process_files', async function (req, res){
-	res.json(getFoldersList('public/uploads'));
-});
 
 router.post('/delete', async function (req, res) {
 	fs.unlink(req.body.path, (err)=>{
@@ -88,7 +83,9 @@ router.post('/getContent', async function (req, res) {
 
 router.post('/upload', upload.single('file'), function (req, res) {
 	let file = req.file;
-	res.send(file.originalname + ' загружен в ' + file.destination);
+	if(!req.body.reupload)
+		return res.send(file.originalname + ' загружен в ' + file.destination);
+	res.send(file.originalname + ' успешно изменён');
 });
 
 router.post('/writeFile', function (req,res) {
@@ -101,69 +98,82 @@ router.post('/writeFile', function (req,res) {
 	});
 });
 
-async function process(template_file, data_file, row_splitter, new_row_splitter, out_file) {
-	var fs = require('fs')
-		, es = require('event-stream');
+router.post('/process_files', async function (req, res){
+	let data = JSON.parse(req.body.data);
+	for(let set of data) {
+		process(set).then(() => {
+			res.send()
+		})
+	}
+});
 
-	var lineNr = 0;
+async function process({template_file, data_file, row_splitter, new_row_splitter, out_dir}) {
 
-	var array_header = [];
-	var dict_header = {};
+	let es = require('event-stream'),
 
-	var template_b = fs.readFileSync(data_file);
-	var template_string = template_b.toString("UTF-8");
+		lineNr = 0,
 
-	var fs = require('fs');
-	var logger = fs.createWriteStream(out_file, {
-		flags: 'a' // 'a' means appending (old data will be preserved)
-	});
+		array_header = [],
+		dict_header = {},
 
-	var s =
-		fs.createReadStream(template_file)
-			.pipe(es.split())
-			.pipe(es.mapSync(function (line) {
+		template_b = fs.readFileSync('App/Data/' + data_file),
+		template_string = template_b.toString("UTF-8"),
 
-					// pause the readstream
-					s.pause();
+		logger = fs.createWriteStream(out_dir + '/model_' + data_file, {
+			flags: 'a' // 'a' means appending (old data will be preserved)
+		}),
 
-					if (lineNr == 0) {
-						array_header = line.split(';');
-						dict_header = array_header.reduce((p, x, i) => { p[i] = x; return p; }, {});
-					}
-					else {
-						var array_values = line.split(row_splitter);
-						array_values = array_values.map((x, i) => { return { v: x, h: dict_header[i] } });
+		s =
+			fs.createReadStream('App/Templates/' + template_file)
+				.pipe(es.split())
+				.pipe(es.mapSync(function (line) {
 
-						// делаем замену и дописываем выход
-						var replaced_line = template_string;
-						array_values.forEach((x, i) => {
-							//h-исходное слово
-							//v-новое значение
-							if (x.h.length>0) {
-								replaced_line = replaced_line.replace('/' + x.h + '/g', x.v);
-							}
-						});
-						// тепреь все готово. записываем в выходной файл
-						logger.write(replaced_line);
-					}
+						// pause the readstream
+						s.pause();
 
-					lineNr += 1;
+						if (lineNr === 0) {
+							array_header = line.split(row_splitter);
+							dict_header = array_header.reduce((p, x, i) => {
+								p[i] = x;
+								return p;
+							}, {});
+						}
+						else {
+							var array_values = line.split(row_splitter);
+							array_values = array_values.map((x, i) => {
+								return {v: x, h: dict_header[i]}
+							});
 
-					// process line here and call s.resume() when rdy
-					// function below was for logging memory usage
-					//logMemoryUsage(lineNr);
+							// делаем замену и дописываем выход
+							var replaced_line = template_string;
+							array_values.forEach((x, i) => {
+								//h-исходное слово
+								//v-новое значение
+								if (x.h.length > 0) {
+									replaced_line = replaced_line.replace('/' + x.h + '/g', x.v);
+								}
+							});
+							// тепреь все готово. записываем в выходной файл
+							logger.write(replaced_line);
+						}
 
-					// resume the readstream, possibly from a callback
-					s.resume();
-				})
-					.on('error', function (err) {
-						console.log('Error while reading file.', err);
+						lineNr += 1;
+
+						// process line here and call s.resume() when rdy
+						// function below was for logging memory usage
+						//logMemoryUsage(lineNr);
+
+						// resume the readstream, possibly from a callback
+						s.resume();
 					})
-					.on('end', function () {
-						console.log('Read entire file.');
-						logger.end();
-					})
-			);
+						.on('error', function (err) {
+							console.log('Error while reading file.', err);
+						})
+						.on('end', function () {
+							console.log('Read entire file.');
+							logger.end();
+						})
+				);
 }
 
 module.exports = router;

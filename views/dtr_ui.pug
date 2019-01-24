@@ -1,25 +1,26 @@
-td
-	div.input-group-text.rounded-0
-		label.form-check-label=locals.id + 1
-td
-	div.input-group
-		label.form-control.overflow-hidden(id='selected_template_' + locals.id)='Выберите шаблон'
-		div.input-group-append
-			button.btn.btn-outline-secondary(id='browse_temp_' + locals.id )
-				img(src='open-iconic/svg/magnifying-glass.svg').icon
-td
-	div.input-group
-		label.form-control.overflow-hidden(id='selected_data_' + locals.id)='Выберите данные'
-		div.input-group-append
-			button.btn.btn-outline-secondary(id='browse_data_' + locals.id )
-				img(src='open-iconic/svg/magnifying-glass.svg').icon
-td
-	div.input-group
-		input.form-control.rounded-0(type='text' id='selected_splitter_' + locals.id value=locals.spl)
-td
-	div.input-group
-		input.form-control.rounded-0(type='text' id='selected_rowsym_' + locals.id value=locals.nrow)
-td
-	div.input-group.d-block
-		div.input-group-text.d-block(for='selected_state_'+locals.id)
-			input(type='checkbox' id='selected_state_' + locals.id checked)
+tr
+	td
+		div.input-group-text.rounded-0
+			label.form-check-label=locals.id + 1
+	td
+		div.input-group
+			input.form-control.overflow-hidden(id='selected_template_' + locals.id disabled)
+			div.input-group-append
+				button.btn.btn-outline-secondary(id='browse_temp_' + locals.id )
+					img(src='open-iconic/svg/magnifying-glass.svg').icon
+	td
+		div.input-group
+			input.form-control.overflow-hidden(id='selected_data_' + locals.id disabled)
+			div.input-group-append
+				button.btn.btn-outline-secondary(id='browse_data_' + locals.id )
+					img(src='open-iconic/svg/magnifying-glass.svg').icon
+	td
+		div.input-group
+			input.form-control.rounded-0(type='text' id='selected_splitter_' + locals.id value=locals.spl)
+	td
+		div.input-group
+			input.form-control.rounded-0(type='text' id='selected_rowsym_' + locals.id value=locals.nrow)
+	td
+		div.input-group.d-block
+			div.input-group-text.d-block
+				input(type='checkbox' id='selected_state_' + locals.id checked)

@@ -1,44 +1,58 @@
 //pug ./utr_ui.pug -c -n utr_ui -D -o ../public/jsviews
 function dup_tablerow(params) {
 
-	let id = params.id;
-	this.id = () => id;
+	let id = params.id,
 
-	let dom = null;
+		dom = null,
 
-	let initialized = false;
+		selected_file = null,
+		selected_type = null,
 
-	let selected_file = null;
-	let selected_type = null;
+		sfile = () => $('#selected_file_' + id),
+		sfol = () => $('#selected_folder_' + id),
+		st = () => $('#selected_type_' + id),
 
-	let sfile = () => $('#selected_file_' + id);
-	let sfol = () => $('#selected_folder_' + id);
-	let st = () => $('#selected_type_' + id);
+		buildUI = () => {
+			dom = $(utr_ui(params));
+		},
 
-	this.UI = () => {
-		if (!dom) {
-			dom = document.createElement('tr');
-			dom.innerHTML = utr_ui(params);
-		}
-		return dom;
-	};
+		init = () => {
 
-	this.putInto = function(parent) {
-		parent.append(dom);
-		init();
-	};
+			sfile().change(function (evt) {
+				let fileName = $(this).prop('files')[0].name;
+				if (fileName) {
+					$(this).removeClass('is-invalid');
+					$(this).next('.custom-file-label').html(fileName);
+					selected_file = $(this).prop('files')[0]
+				} else evt.preventDefault();
+			});
 
-	this.getFormData = () => {
-		let fd = new FormData();
+			st().change(function () {
+				selected_type = $(this).val();
+				if (!isNullOrWhitespace(selected_type))
+					sfol().val('App/' + selected_type);
+				else
+					sfol().val('');
+			});
+
+			$('#browse_folder_' + id).click(function () {
+				sfol().val();
+			});
+		};
+
+
+	this.putInto = function (parent) {
+		buildUI();
+		$.when(parent.append(dom)).then(init);
 	};
 
 	this.validate = () => {
 		let valid = true;
 		[sfile(), st()].forEach(function (el) {
-				if ((el.type === 'file' && !el[0].files[0]) || isNullOrWhitespace(el.val())) {
-					el.addClass('is-invalid');
-					valid = false;
-				}
+			if ((el.type === 'file' && !el[0].files[0]) || isNullOrWhitespace(el.val())) {
+				el.addClass('is-invalid');
+				valid = false;
+			}
 		});
 		return valid;
 	};
@@ -50,37 +64,19 @@ function dup_tablerow(params) {
 		return fd;
 	};
 
-	this.delete = (parent) => {
-		$(dom).remove();
+	this.notify = (message) => {
+		let info = $();
+		$.when(dom.replaceWith(info = $('<p>' + message + '</p>'))).then(
+		setTimeout(function () {
+			info.remove();
+		}, 5000));
+	};
+
+	this.delete = () => {
+		dom.remove();
 		delete this;
 	};
 
-	let init = () => {
-		if(initialized) return;
-
-		sfile().change(function(evt){
-			let fileName = $(this).prop('files')[0].name;
-			if(fileName) {
-				$(this).removeClass('is-invalid');
-				$(this).next('.custom-file-label').html(fileName);
-				selected_file = $(this).prop('files')[0]
-			} else evt.preventDefault();
-		});
-
-		st().change(function () {
-			selected_type = $(this).val();
-			if(!isNullOrWhitespace(selected_type))
-				sfol().val('App/' + selected_type);
-			else
-				sfol().val('');
-		});
-
-		$('#browse_folder_' + id).click(function () {
-			sfol().val();
-		});
-
-		initialized=true;
-
-	}
+	this.id = () => id;
 
 }
