@@ -1,0 +1,14 @@
+extends layout
+block content
+	div#main
+		div.btn-group.btn-group-toggle.m-auto.sticky-top.w-100(data-toggle='buttons')#pagetoggles
+			label.col.rounded-0.btn.btn-outline-secondary(class=(section==='upvi' ? 'active' : null))='Загрузка и просмотр файлов'
+				input#option1(type='radio' name='/upload_and_view' autocomplete='off' checked)
+			label.col.rounded-0.btn.btn-outline-secondary(class=(section==='link' ? 'active' : null))='Сопоставление шаблонов и данных'
+				input#option2(type='radio' name='/linking' autocomplete='off')
+			label.col.rounded-0.btn.btn-outline-secondary(class=(section==='stat' ? 'active' : null))='Статус'
+				input#option3(type='radio' name='/status' autocomplete='off')
+			label.col.rounded-0.btn.btn-outline-secondary(class=(section==='launch' ? 'active' : null))='Запуск модели'
+				input#option4(type='radio' name='/launch' autocomplete='off')
+		block sections
+	script(src='/javascripts/main.js')

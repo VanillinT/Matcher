@@ -1,0 +1,13 @@
+block uv_content
+	div#upload_ui
+		table.table.table-bordered.table-sm
+			thead
+				tr.d-flex
+					th.col-5(scope='col')='Файл'
+					th.col-5(scope='col')='Папка в приложении'
+					th.col(scope='col')='Тип'
+				tbody#tbody
+		div
+			button.btn.btn-secondary.mx-auto.d-block(style='width:150px')#add_utr='+'
+		script.
+			$.getScript('/javascripts/uploadpage.js')

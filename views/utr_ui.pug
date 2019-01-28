@@ -1,16 +1,16 @@
-tr
-	td
+tr.d-flex
+	td.col-5
 		div.input-group
 			div.custom-file
 				input.custom-file-input(type='file' id='selected_file_' + locals.id)
 				label.custom-file-label.overflow-hidden(for='selected_file_' + locals.id)=locals.file ? locals.file.originalname : 'Выберите файл'
-	td
+	td.col-5
 		div.input-group
 			input.form-control(type='text' value=(locals.file ? locals.file.originalname : '') id='selected_folder_' + locals.id readonly)
 			div.input-group-append
 				div.input-group-text(id='browse_folder_' + locals.id )
-					img(src='open-iconic/svg/magnifying-glass.svg').icon
-	td
+					img(src='/open-iconic/svg/magnifying-glass.svg').icon
+	td.col
 		div.input-group
 			select.custom-select(id='selected_type_' + locals.id)
 				option(selected value='')='Выберите тип...'

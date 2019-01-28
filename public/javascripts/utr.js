@@ -1,5 +1,5 @@
 //pug ./utr_ui.pug -c -n utr_ui -D -o ../public/jsviews
-function dup_tablerow(params) {
+function utr(params) {
 
 	let id = params.id,
 
@@ -66,10 +66,10 @@ function dup_tablerow(params) {
 
 	this.notify = (message) => {
 		let info = $();
-		$.when(dom.replaceWith(info = $('<p>' + message + '</p>'))).then(
+		$.when(dom.replaceWith(info = $('<tr class="container"><td colspan="3"><p>' + message + '</p></td></tr>>'))).then(
 		setTimeout(function () {
 			info.remove();
-		}, 5000));
+		}, 2000));
 	};
 
 	this.delete = () => {

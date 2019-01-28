@@ -1,19 +1,20 @@
-function statuspage() {
+function launch() {
 
 	let dom = null,
 
 		buildUI = () => {
 			dom = document.createElement('div')
-			dom.id = 'statuspage';
-
+			dom.id = 'launchpage';
 			return dom;
 		},
 		init = () => {
 
 		};
+
 	this.putInto = (target) => {
 		if (!dom) buildUI();
 		target.children(':first').replaceWith(dom);
 		init();
 	};
+
 }

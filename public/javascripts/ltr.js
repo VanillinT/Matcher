@@ -1,6 +1,6 @@
-//pug ./dtr_ui.pug -c -n dtr_ui -D -o ../public/jsviews
+//pug ./ltr_ui.pug -c -n ltr_ui -D -o ../public/jsviews
 //pug ./file_list_modal.pug -c -n file_list_modal -D -o ../public/jsviews
-function dl_tablerow(params) {
+function ltr(params) {
 
 	let id = params.id,
 
@@ -33,7 +33,7 @@ function dl_tablerow(params) {
 		},
 
 		buildUI = () => {
-			dom = $(dtr_ui(params));
+			dom = $(ltr_ui(params));
 		};
 
 	this.data = () => {
@@ -70,6 +70,19 @@ function dl_tablerow(params) {
 		$.when(parent.append(dom)).then(init);
 	};
 
+	this.notify = (message) => {
+		let info = $();
+		$.when(dom.replaceWith(info = $('<tr class="container"><td colspan="3"><p>' + message + '</p></td></tr>>'))).then(
+			setTimeout(function () {
+				info.remove();
+			}, 2000));
+	};
+
+	this.delete = () => {
+		dom.remove();
+		delete this;
+	};
+
 	async function showModal(el, type) {
 		await $.ajax({
 			url: '/getFolder',
@@ -89,12 +102,15 @@ function dl_tablerow(params) {
 							$(this).css('cursor', 'default')
 						});
 						$('#file_list tr td').click(function () {
-							el.val($(this).text());
+							el.val('App/' + type + '/' + $(this).text());
 							el.removeClass('is-invalid');
 							mod.modal('hide');
 						});
 					})
 					.modal();
+			},
+			error: function (err) {
+				console.log(err)
 			}
 		});
 	}
