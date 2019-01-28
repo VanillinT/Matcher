@@ -3,4 +3,6 @@ node_modules/
 bin/
 /uploads
 public/uploads
-App/
+App/Models
+App/Templates
+App/Data
