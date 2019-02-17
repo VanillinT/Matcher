@@ -11,7 +11,6 @@ $('#add_utr').click(() => {
 
 $('#btn_upload').click(async function () {
 	let validRows = up_rows.filter(row => row.validate());
-	console.log(validRows);
 	validRows.forEach((row) => {
 		let formData = row.formData();
 		if (!formData) return;
@@ -26,16 +25,11 @@ $('#btn_upload').click(async function () {
 			data: formData
 		}))
 			.then((res) => {
-				row.notify(res);
+				notify(res);
 				up_rows = up_rows.filter(r => r != row);
-				setTimeout(function () {
-					row.delete();
-				}, 5000);
+				row.delete();
 			}, (err) => {
-				row.notify(err);
-				setTimeout(function () {
-					row.delete();
-				}, 5000);
+				alert(err);
 			});
 	});
 })

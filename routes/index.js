@@ -18,19 +18,6 @@ router.post('/getFolder', (req,res)=>{
 	res.send({type, files});
 });
 
-
-router.post('/getViewModal', async function (req, res) {
-	let ext = path.extname(req.body.path),
-		file_name = req.body.filename;
-	if (ext === '.csv')
-		fs.readFile(req.body.path, (err, content) => {
-			if (err) return;
-			let array = app.csv2array(content.toString(), ';');
-			res.render('csv_viewmode_modal', {file_name, array});
-		});
-	else res.render('viewmode_modal', {file_name});
-});
-
 router.post('/getText', (req, res) => {
 	let path = req.body.path;
 	let rs = fs.createReadStream(path);
@@ -43,7 +30,7 @@ let
 
 	storage = multer.diskStorage({
 		destination: (req, file, cb) => {
-			let dir = 'App/' + req.body.type;
+			let dir = req.body.folder;
 			if (!fs.existsSync(dir))
 				fs.mkdirSync(dir);
 			cb(null, dir);
@@ -87,11 +74,29 @@ router.post('/upload_and_view/:mode', async (req, res)=> {
 	}
 });
 
+router.get('/getAppFolders', (req,res)=>{
+	let folders = app.getFoldersList();
+	res.send(folders);
+});
+
+router.post('/getViewModal', async function (req, res) {
+	let ext = path.extname(req.body.path),
+		file_name = req.body.filename;
+	if (ext === '.csv')
+		fs.readFile(req.body.path,(err, content) => {
+			if (err) return;
+			let array = app.csv2array(content.toString(), ';');
+			res.render('csv_viewmode_modal', {file_name, array});
+		});
+	else res.render('viewmode_modal', {file_name});
+});
+
 router.post('/upload', upload.single('file'), function (req, res) {
 	let file = req.file;
 	if(!req.body.reupload)
-		return res.send('Успех');
-	res.send(file.originalname + ' успешно изменён');
+		res.render('toast',{header: 'Загружено', message:`${file.originalname} успешно загружен`});
+	else
+		res.render('toast',{header: 'Изменено', message:file.originalname + ' успешно изменён'});
 });
 
 router.post('/download', async function (req, res) {
@@ -101,9 +106,12 @@ router.post('/download', async function (req, res) {
 router.post('/delete', async function (req, res) {
 	fs.unlink(req.body.path, (err)=>{
 		if(err) return err;
-
-		res.send(req.body.path + ' успешно удалён');
+		let filename = req.body.path.split('/')[2];
+		res.render('toast', {header:'Удалено', message:`${filename} успешно удалён`});
 	});
+	let files_left = app.getFilesList(req.body.folder);
+	if(!(files_left.length > 0))
+		fs.rmdir('App/' + req.body.folder);
 });
 
 /* linking */
@@ -121,7 +129,7 @@ router.post('/linking', (req,res) => {
 router.post('/process_files', async (req, res) => {
 	//data = [{ template_file, data_file, row_splitter, new_row_splitter, out_dir }...]
 	let data = JSON.parse(req.body.data);
-	res.send('Файлы поступили на обработку');
+	res.render('toast',{header:'Файлы поступили на обработку'});
 	app.appendLog(data);
 	await processData(data);
 });

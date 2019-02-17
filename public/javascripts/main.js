@@ -25,7 +25,7 @@ let up_rows = [],
 		row.putInto($('#tbody'));
 	},
 	path_box = () => $('#selected_path').val(),
-	sel_path = 'App/Models';
+	sel_path = 'App/Models',
 
 	new_li_Row = (row) => {
 		if (!row)
@@ -33,4 +33,10 @@ let up_rows = [],
 		let newrow = new ltr(row);
 		newrow.putInto($('#tbody'));
 		li_rows.push(newrow);
+	},
+	notify = (toast)=> {
+		$('#notifications').append($(toast));
+		$('.toast').on('hidden.bs.toast', function () {
+			$(this).remove();
+		}).toast('show');
 	};

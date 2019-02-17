@@ -12,7 +12,7 @@ block sections
 					a(href='/upload_and_view/upload')
 					input#upmode(type='radio' name='upload' autocomplete='off' checked=(mode==='upload'))
 		.d-block
-			button.btn.btn-secondary.m-auto.position-absolute(type='button' style='right:30px; display: none')#btn_upload='Загрузить'
+			button.btn.btn-secondary.m-auto.position-absolute(type='button' style='right:30px; display: ' + (mode ==='upload' ? 'true' : 'none'))#btn_upload='Загрузить'
 	script(src='/javascripts/utr.js')
 	script(src='/javascripts/uploadandview.js')
 	script(src='/jsviews/utr_ui.js')

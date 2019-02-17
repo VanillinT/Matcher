@@ -10,14 +10,18 @@ $('table').hover(function () {
 	$('#controls_for_' + $(this).prop('id')).removeClass('d-inline-block').addClass('d-none');
 });
 
-function deleteFile(path, elementid) {
-	let data = {path};
+function showDropdown() {
+
+}
+
+function deleteFile(path, folder, elementid) {
+	let data = {path, folder};
 	$.ajax({
 		url:'/delete',
 		type: 'post',
 		data: data,
 		success: function (res) {
-			console.log(res);
+			notify(res);
 			$('#' + elementid).remove();
 		}
 	});
@@ -43,8 +47,8 @@ function downloadFile(filename, root) {
 	});
 }
 
-function viewFile(filename, path, type) {
-	let data = {filename, path, type};
+function viewFile(filename, path, folder) {
+	let data = {filename, path, folder};
 	$.post({
 		url: '/getViewModal',
 		data: data,
@@ -78,7 +82,7 @@ function viewFile(filename, path, type) {
 						var fd = new FormData();
 						var blob = new Blob([text], {type: 'plain/text'});
 						fd.append('reupload', 'true');
-						fd.append('type', type);
+						fd.append('folder', folder);
 						fd.append('file', blob, filename);
 						$.ajax({
 							url: '/upload',
@@ -89,7 +93,7 @@ function viewFile(filename, path, type) {
 							type: 'post',
 							data: fd,
 							success: function (res) {
-								alert(res);
+								notify(res);
 							},
 							error: function (err) {
 								console.log(err);

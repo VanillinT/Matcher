@@ -1,0 +1,6 @@
+.toast(role="alert" aria-live="assertive" aria-atomic="true" data-delay="3000")
+    .toast-header
+        img.mr-2.icon(src="/open-iconic/svg/check.svg")
+        strong.mr-auto=header
+    if(message)
+        .toast-body #{message}

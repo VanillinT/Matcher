@@ -7,10 +7,13 @@ function utr(params) {
 
 		selected_file = params.selected_file,
 		selected_type = params.selected_type,
+		selected_folder = params.selected_folder,
+		selected_encoding = params.selected_encoding ? params.selected_encoding : 'utf-8',
 
 		sfile = () => $('#selected_file_' + id),
 		sfol = () => $('#selected_folder_' + id),
 		st = () => $('#selected_type_' + id),
+		se = () => $('#selected_encoding_' + id),
 
 		buildUI = () => {
 			dom = $(utr_ui({id}));
@@ -40,16 +43,24 @@ function utr(params) {
 					sfol().val('App/' + selected_type);
 				else
 					sfol().val('');
+				sfol().trigger('change');
+			});
+
+			sfol().change(function () {
+				selected_folder = $(this).val();
 			});
 
 			$('#browse_folder_' + id).click(function () {
 				sfol().val();
 			});
+
+			se().change(function () {
+				selected_encoding = $(this).val();
+			})
 		};
 
 	this.info = () => {
-		console.log(selected_file);
-		return {id, dom: '<tr class="d-flex">' + $(dom).html() + '</tr>', selected_type, selected_file};
+		return {id, dom: '<tr class="d-flex">' + $(dom).html() + '</tr>', selected_type, selected_file, selected_folder, selected_encoding};
 	};
 
 	this.putInto = function (parent) {
@@ -69,19 +80,12 @@ function utr(params) {
 	};
 
 	this.formData = () => {
-		console.log(selected_file);
 		let fd = new FormData();
+		fd.append('encoding', selected_encoding);
+		fd.append('folder', selected_folder);
 		fd.append('type', selected_type);
 		fd.append('file', selected_file);
 		return fd;
-	};
-
-	this.notify = (message) => {
-		let info = $();
-		$.when(dom.replaceWith(info = $('<tr class="container"><td colspan="3"><p>' + message + '</p></td></tr>'))).then(
-		setTimeout(function () {
-			info.remove();
-		}, 2000));
 	};
 
 	this.delete = () => {

@@ -2,7 +2,8 @@
 //pug ./file_list_modal.pug -c -n file_list_modal -D -o ../public/jsviews
 function ltr(params) {
 
-	let id = params.id,
+	let This = this,
+		id = params.id,
 
 		dom = null,
 
@@ -70,17 +71,9 @@ function ltr(params) {
 		$.when(parent.append(dom)).then(init);
 	};
 
-	this.notify = (message) => {
-		let info = $();
-		$.when(dom.replaceWith(info = $('<tr class="container"><td colspan="3"><p>' + message + '</p></td></tr>>'))).then(
-			setTimeout(function () {
-				info.remove();
-			}, 2000));
-	};
-
 	this.delete = () => {
 		dom.remove();
-		delete this;
+		delete This;
 	};
 
 	async function showModal(el, type) {

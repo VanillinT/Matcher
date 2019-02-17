@@ -33,9 +33,9 @@ $('#btn_start')
 			data: {data},
 			success: function (res) {
 				valid_rows.forEach(row=>{
-					row.notify('Успех');
+					notify(res);
 					li_rows = li_rows.filter(r => r != row);
-					setTimeout(row.delete, 2000);
+					row.delete()
 				})
 			}
 		});

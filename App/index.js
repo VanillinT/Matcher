@@ -2,7 +2,7 @@ fs = require('fs');
 
 exports.getAppContent = () => {
 	let root = 'App/',
-		folders = this.getFoldersList(),
+		folders = exports.getFoldersList(),
 		content = [];
 	for(let type of folders) {
 		let folder = {name: type, files: []},
@@ -48,7 +48,7 @@ exports.appendLog = (models) => {
 	let logged_models = exports.getLoggedModels(),
 		cnt = countLaunches();
 	models.forEach((model) => {
-		model.id = logged_models.length;
+		model.id = logged_models[logged_models.length-1].id+1;
 		model.status = 'В ожидании';
 		model.launch_id = cnt+1;
 		logged_models.push(model);
@@ -83,8 +83,10 @@ exports.process = async (model) => {
 
 		template_b = fs.readFileSync(template_file),
 		template_string = template_b.toString("UTF-8"),
-
 		out_file = model.out_dir + '/' + model.template_file.split('/')[2].slice(0, -4) + '_IMP.imp';
+
+	if(!fs.existsSync(model.out_dir))
+		fs.mkdirSync(model.out_dir);
 	model.status = 'В процессе';
 	await this.changeLog(model);
 
