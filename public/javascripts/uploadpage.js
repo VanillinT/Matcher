@@ -1,38 +1,42 @@
 //pug ./uploadpage.pug -c -n dup_upmode_ui -D -o ../public/jsviews
+window.history.pushState('upload', 'upload', '/upload_and_view/upload');
+
+up_rows.forEach(row=>{
+	processRow(row);
+});
 
 $('#add_utr').click(() => {
-	newRow();
+	new_up_Row();
 });
 
 $('#btn_upload').click(async function () {
-	let validRows = rows.filter(row => row.validate());
-	validRows.forEach(async (row) => {
+	let validRows = up_rows.filter(row => row.validate());
+	console.log(validRows);
+	validRows.forEach((row) => {
 		let formData = row.formData();
-		if (formData) {
-			await $.when($.ajax({
-				url: '/upload',
-				enctype: 'multipart/form-data',
-				processData: false,
-				cache: false,
-				contentType: false,
-				type: 'post',
-				data: formData
-			}))
-				.then((res) => {
-					row.notify(res);
-					setTimeout(function () {
-						row.delete();
-					}, 5000);
-				}, (err) => {
-					row.notify(err);
-					setTimeout(function () {
-						row.delete();
-					}, 5000);
-				});
-		} else rows.push(row);
-	});
-	validRows.forEach((el) => {
-		rows = rows.filter(row => row != el);
+		if (!formData) return;
+
+		$.when($.ajax({
+			url: '/upload',
+			enctype: 'multipart/form-data',
+			processData: false,
+			cache: false,
+			contentType: false,
+			type: 'post',
+			data: formData
+		}))
+			.then((res) => {
+				row.notify(res);
+				up_rows = up_rows.filter(r => r != row);
+				setTimeout(function () {
+					row.delete();
+				}, 5000);
+			}, (err) => {
+				row.notify(err);
+				setTimeout(function () {
+					row.delete();
+				}, 5000);
+			});
 	});
 })
 	.popover({
@@ -44,4 +48,3 @@ $('#btn_upload').click(async function () {
 		$(this).popover('hide');
 		$('input, select').removeClass('is-invalid');
 	});
-

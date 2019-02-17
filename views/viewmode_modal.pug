@@ -1,0 +1,17 @@
+.modal(tabindex=-1 role='dialog' aria-hidden=true)
+	.modal-dialog.modal-dialog-centered.modal-lg.my-0(role='document')
+		.modal-content.border-0.rounded-0
+			.modal-header
+					h5='Просмотр файла ' + file_name
+					button.close(type='button' data-dismiss='modal' aria-label='Close')
+						span(aria-hidden=true)='╳'
+			.modal-body.overflow-auto
+				#content_box
+					block modal_content
+						#text_box
+							.d-flex.justify-content-center
+								.spinner-border(role='status')
+									.sr-only
+			.modal-footer
+				button.btn.btn-primary#btn_edit='Изменить'
+				button.btn.btn-primary#btn_save='Сохранить'

@@ -1,29 +1,36 @@
 //pug ./utr_ui.pug -c -n utr_ui -D -o ../public/jsviews
 function utr(params) {
+	let This = this,
+		id = params.id,
 
-	let id = params.id,
+		dom = $(params.dom),
 
-		dom = null,
-
-		selected_file = null,
-		selected_type = null,
+		selected_file = params.selected_file,
+		selected_type = params.selected_type,
 
 		sfile = () => $('#selected_file_' + id),
 		sfol = () => $('#selected_folder_' + id),
 		st = () => $('#selected_type_' + id),
 
 		buildUI = () => {
-			dom = $(utr_ui(params));
+			dom = $(utr_ui({id}));
 		},
 
 		init = () => {
+
+			if (selected_file)
+				sfile().next('.custom-file-label').html(selected_file.name);
+			if(!isNullOrWhitespace(selected_type)) {
+				st().val(selected_type);
+				sfol().val('App/' + selected_type);
+			}
 
 			sfile().change(function (evt) {
 				let fileName = $(this).prop('files')[0].name;
 				if (fileName) {
 					$(this).removeClass('is-invalid');
 					$(this).next('.custom-file-label').html(fileName);
-					selected_file = $(this).prop('files')[0]
+					selected_file = $(this).prop('files')[0];
 				} else evt.preventDefault();
 			});
 
@@ -40,9 +47,13 @@ function utr(params) {
 			});
 		};
 
+	this.info = () => {
+		console.log(selected_file);
+		return {id, dom: '<tr class="d-flex">' + $(dom).html() + '</tr>', selected_type, selected_file};
+	};
 
 	this.putInto = function (parent) {
-		buildUI();
+		if(!dom.html()) buildUI();
 		$.when(parent.append(dom)).then(init);
 	};
 
@@ -58,6 +69,7 @@ function utr(params) {
 	};
 
 	this.formData = () => {
+		console.log(selected_file);
 		let fd = new FormData();
 		fd.append('type', selected_type);
 		fd.append('file', selected_file);
@@ -66,7 +78,7 @@ function utr(params) {
 
 	this.notify = (message) => {
 		let info = $();
-		$.when(dom.replaceWith(info = $('<tr class="container"><td colspan="3"><p>' + message + '</p></td></tr>>'))).then(
+		$.when(dom.replaceWith(info = $('<tr class="container"><td colspan="3"><p>' + message + '</p></td></tr>'))).then(
 		setTimeout(function () {
 			info.remove();
 		}, 2000));
@@ -74,9 +86,8 @@ function utr(params) {
 
 	this.delete = () => {
 		dom.remove();
-		delete this;
+		delete This;
 	};
 
 	this.id = () => id;
-
 }

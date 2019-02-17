@@ -1,5 +1,5 @@
 block uv_content
-	div#view_ui.p-5
+	#view_ui.px-5.pt-5
 		div.d-block
 			div.media
 				img.align-self-center(src= '/open-iconic/svg/folder.svg').icon
@@ -22,11 +22,11 @@ block uv_content
 											label.m-auto=file.name
 										th.d-none(id='controls_for_row_' + i + j)
 											div
-												button.btn.btn-sm.p-0.border-0(onclick='viewFile("' + file.name + '","' + file.fullpath +'","' + folder.name + '")')
+												button.btn.btn-sm.p-0.border-0(onclick=`viewFile("${file.name}","${file.fullpath}", "${folder.name}")`)
 													img(src= '/open-iconic/svg/eye.svg').icon
-												button.btn.btn-sm.p-0.border-0.mx-1(onclick='downloadFile("' + file.name + '","' + file.root +'")')
+												button.btn.btn-sm.p-0.border-0.mx-1(onclick=`downloadFile("${file.name}", "${file.root}")`)
 													img(src= '/open-iconic/svg/data-transfer-download.svg').icon
-												button.btn.btn-sm.p-0.border-0(onclick='deleteFile("' + file.fullpath + '",' + '"row_' + i + j + '")')
+												button.btn.btn-sm.p-0.border-0(onclick=`deleteFile("${file.fullpath}", "row_${i}${j}")`)
 													img(src= '/open-iconic/svg/trash.svg').icon
 		script.
 			$.getScript('/javascripts/viewpage.js')

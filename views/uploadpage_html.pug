@@ -1,11 +1,12 @@
 block uv_content
-	div#upload_ui
+	#upload_ui
 		table.table.table-bordered.table-sm
 			thead
 				tr.d-flex
-					th.col-5(scope='col')='Файл'
-					th.col-5(scope='col')='Папка в приложении'
+					th.col-4(scope='col')='Файл'
+					th.col-4(scope='col')='Папка в приложении'
 					th.col(scope='col')='Тип'
+					th.col(scope='col')='Кодировка'
 				tbody#tbody
 		div
 			button.btn.btn-secondary.mx-auto.d-block(style='width:150px')#add_utr='+'

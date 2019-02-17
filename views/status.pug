@@ -1,21 +1,2 @@
 extends main
-block sections
-	div
-	table.table.table-bordered
-		thead
-			tr
-				th='Шаблон'
-				th='Данные'
-				th='Номер запуска'
-				th='Статус'
-				th='Выходной файл'
-				th='ID процесса'
-		tbody
-			each model in logged_models
-				tr
-					td=model.template_file
-					td=model.data_file
-					td=model.launch_id
-					td=model.status
-					td=model.out_file
-					td=model.id
+include status_html

@@ -1,12 +1,13 @@
-let express = require('express');
-let router = express.Router();
-let fs = require('fs');
-let app = require('../App/index');
+let express = require('express'),
+	router = express.Router(),
+	fs = require('fs'),
+	app = require('../App/index'),
+	path = require('path');
 
 
 
 /* GET home page. */
-router.get('/', async function(req, res, next) {
+router.get('/', (req, res) => {
 	res.redirect('/upload_and_view');
 });
 
@@ -18,11 +19,23 @@ router.post('/getFolder', (req,res)=>{
 });
 
 
-router.post('/getContent', async function (req, res) {
-	let src = fs.createReadStream(req.body.path);
-	src.pipe(res);
+router.post('/getViewModal', async function (req, res) {
+	let ext = path.extname(req.body.path),
+		file_name = req.body.filename;
+	if (ext === '.csv')
+		fs.readFile(req.body.path, (err, content) => {
+			if (err) return;
+			let array = app.csv2array(content.toString(), ';');
+			res.render('csv_viewmode_modal', {file_name, array});
+		});
+	else res.render('viewmode_modal', {file_name});
 });
 
+router.post('/getText', (req, res) => {
+	let path = req.body.path;
+	let rs = fs.createReadStream(path);
+	rs.pipe(res);
+});
 /* upload and view */
 
 let
@@ -41,25 +54,37 @@ let
 	}),
 	upload = multer({storage : storage});
 
-router.get('/upload_and_view', async function(req, res, next) {
-	section = 'upvi';
+router.get('/upload_and_view', (req, res) => {
+	res.redirect('/upload_and_view/view');
+});
+
+router.post('/upload_and_view', (req, res) => {
 	let content = app.getAppContent();
-	res.render('viewpage', {content, mode: 'view'});
+	res.render('uploadandview_html', {content, mode:'view'});
+});
+
+router.get('/upload_and_view/:mode', (req, res, next) => {
+	global.section = 'upvi';
+	let mode = req.params.mode;
+	if (mode === 'upload') {
+		res.render('uploadpage', {mode});
+	}
+	else {
+		let content = app.getAppContent();
+		res.render('viewpage', {content, mode});
+	}
 
 });
 
 router.post('/upload_and_view/:mode', async (req, res)=> {
 	let mode = req.params.mode;
-	if (mode === 'upload')
-		res.render('upload_html');
+	if (mode === 'upload') {
+		res.render('uploadpage_html');
+	}
 	else {
 		let content = app.getAppContent();
-		res.render('view_html', {content});
+		res.render('viewpage_html', {content});
 	}
-});
-
-router.post('/savelayout', (req, res)=>{
-	upload_page_html = req.body.layout;
 });
 
 router.post('/upload', upload.single('file'), function (req, res) {
@@ -84,8 +109,13 @@ router.post('/delete', async function (req, res) {
 /* linking */
 
 router.get('/linking', (req,res) => {
-	section = 'link';
+	global.section = 'link';
 	res.render('linking');
+});
+
+router.post('/linking', (req,res) => {
+	global.section = 'link';
+	res.render('linking_html');
 });
 
 router.post('/process_files', async (req, res) => {
@@ -105,14 +135,37 @@ async function processData(data){
 /* status */
 
 router.get('/status', (req, res) => {
-	section = 'stat';
+	global.section = 'stat';
 	let data = app.getLoggedModels();
 	res.render('status', {logged_models:data});
 });
 
-router.get('/launch', (req,res)=>{
+router.post('/status', (req, res) => {
+	global.section = 'stat';
+	let data = app.getLoggedModels();
+	res.render('status_html', {logged_models:data});
+});
+
+router.post('/deletestatus', (req,res) => {
+	let status_id = req.body.id;
+	app.deleteLog(status_id).then(
+		fine => {
+			res.send(`Статус ${status_id} успешно удалён`)
+		},
+		rej => {
+			res.send(rej)
+		});
+});
+
+/* launch */
+router.get('/launch', (req,res) => {
 	section = 'launch';
 	res.render('launch');
+});
+
+router.post('/launch', (req,res) => {
+	section = 'launch';
+	res.render('launch_html');
 });
 
 
