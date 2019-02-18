@@ -106,12 +106,15 @@ router.post('/download', async function (req, res) {
 router.post('/delete', async function (req, res) {
 	fs.unlink(req.body.path, (err)=>{
 		if(err) return err;
-		let filename = req.body.path.split('/')[2];
+		let split_path = req.body.path.split('/'),
+			filename = split_path[split_path.length-1];
+
+		let files_left = app.getFilesList(req.body.folder);
+		if(!(files_left.length > 0))
+			fs.rmdir('App/' + req.body.folder);
+
 		res.render('toast', {header:'Удалено', message:`${filename} успешно удалён`});
 	});
-	let files_left = app.getFilesList(req.body.folder);
-	if(!(files_left.length > 0))
-		fs.rmdir('App/' + req.body.folder);
 });
 
 /* linking */

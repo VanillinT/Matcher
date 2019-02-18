@@ -4,7 +4,7 @@
 			.modal-header
 					h5='Просмотр файла ' + file_name
 					button.close(type='button' data-dismiss='modal' aria-label='Close')
-						span(aria-hidden=true)='╳'
+						span(aria-hidden=true) &times;
 			.modal-body.overflow-auto
 				#content_box
 					block modal_content

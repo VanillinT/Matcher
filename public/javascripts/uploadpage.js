@@ -1,5 +1,6 @@
 //pug ./uploadpage.pug -c -n dup_upmode_ui -D -o ../public/jsviews
-window.history.pushState('upload', 'upload', '/upload_and_view/upload');
+page = '/upload_and_view/upload';
+window.history.pushState('upload', 'upload', page);
 
 up_rows.forEach(row=>{
 	processRow(row);

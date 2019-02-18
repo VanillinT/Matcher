@@ -1,17 +1,30 @@
+let current_page = ';',
+	prev_page = '';
+
 $(document).ready(()=> {
 	$('#main').height($(document).height());
 	document.title = 'SNO';
 	$('#pagetoggles input[type="radio"]').change(function () {
 		let section = $(this).prop('name');
 		if ($(this).is(':checked'))
-				window.history.pushState(section, section, section);
+			page = section;
+			$.post({
+				url: section,
+				success: function (html) {
+					prev_page = html;
+					$('#sections').html(html);
+					window.history.pushState(section, section, section);
+				}
+			});
+	});
+	window.onpopstate = function () {
 		$.post({
-			url: section,
+			url: current_page,
 			success: function (html) {
 				$('#sections').html(html);
 			}
-		})
-	});
+		});
+	}
 });
 
 let up_rows = [],

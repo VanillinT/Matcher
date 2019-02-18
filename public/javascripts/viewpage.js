@@ -1,8 +1,8 @@
 //pug ./view.pug -c -n dup_viewmode_ui -D -o ../public/jsviews
 //pug ./dup_viewmode_modal.pug -c -n dup_viewmode_modal -D -o ../public/jsviews
 
-
-window.history.pushState('view', 'view', '/upload_and_view/view');
+page = '/upload_and_view/view';
+window.history.pushState('view', 'view', page);
 
 $('table').hover(function () {
 	$('#controls_for_' + $(this).prop('id')).removeClass('d-none').addClass('d-inline-block');
