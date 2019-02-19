@@ -19,7 +19,8 @@ block sections
 					input.form-control.rounded-0(type='text')#selected_path
 			div.d-block
 				button.btn.btn-secondary.m-auto.position-absolute(type='button' style='right:30px')#btn_start='Начать'
-	script(src='/javascripts/linking.js')
-	script(src='/javascripts/ltr.js')
-	script(src='/jsviews/file_list_modal.js')
-	script(src='/jsviews/ltr_ui.js')
+	script.
+		$.getScript('/javascripts/linking.js')
+		$.getScript('/javascripts/ltr.js')
+		$.getScript('/jsviews/file_list_modal.js')
+		$.getScript('/jsviews/ltr_ui.js')

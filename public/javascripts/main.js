@@ -1,5 +1,4 @@
-let current_page = ';',
-	prev_page = '';
+let current_page = '';
 
 $(document).ready(()=> {
 	$('#main').height($(document).height());
@@ -17,14 +16,15 @@ $(document).ready(()=> {
 				}
 			});
 	});
-	window.onpopstate = function () {
+	/*window.onpopstate = function () {
+		let showState = function (html) { $('#sections').html(html);};
+		if(current_page === '/upload_and_view/view' ? false : (current_page !== '/upload_and_view/upload'))
+			showState = null;
 		$.post({
 			url: current_page,
-			success: function (html) {
-				$('#sections').html(html);
-			}
+			success: showState()
 		});
-	}
+	}*/
 });
 
 let up_rows = [],

@@ -1,13 +1,14 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var fs = require('fs');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
-var applicaton = require('./App/index');
-var app = express();
+let createError = require('http-errors'),
+    express = require('express'),
+    path = require('path'),
+    cookieParser = require('cookie-parser'),
+    logger = require('morgan'),
+    indexRouter = require('./routes/index'),
+    usersRouter = require('./routes/users'),
+    app = express(),
+    listener = app.listen(5000, function () {
+      console.log('Listening on port ' + listener.address().port);
+    });
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
