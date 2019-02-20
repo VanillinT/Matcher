@@ -9,10 +9,10 @@ function ltr(params) {
 
 		data = null,
 
-		st = () => $('#selected_template_' + id),
-		sd = () => $('#selected_data_' + id),
-		ss = () => $('#selected_splitter_' + id),
-		sr = () => $('#selected_rowsym_' + id),
+		st = () => $('#template_file_' + id),
+		sd = () => $('#data_file_' + id),
+		ss = () => $('#row_splitter_' + id),
+		sr = () => $('#new_row_splitter_' + id),
 
 		isActive = () => $('#selected_state_' + id).prop('checked'),
 
@@ -31,13 +31,22 @@ function ltr(params) {
 					$(this).removeClass('is-invalid');
 				});
 			});
+			save_state();
 		},
 
 		buildUI = () => {
 			dom = $(ltr_ui(params));
 		};
 
+ /* data = { template_file, data_file, row_splitter, new_row_splitter } */
 	this.data = () => {
+		data = {
+			template_file: st().val(),
+			data_file: sd().val(),
+			row_splitter: ss().val(),
+			new_row_splitter: sr().val(),
+			id: id
+		};
 		return data;
 	};
 
@@ -54,12 +63,7 @@ function ltr(params) {
 
 			if (!valid) error();
 			else {
-				data = {
-					template_file: st().val(),
-					data_file: sd().val(),
-					row_splitter: ss().val(),
-					new_row_splitter: sr().val()
-				}
+				This.data();
 			}
 		}
 		return valid;
@@ -76,13 +80,12 @@ function ltr(params) {
 		delete This;
 	};
 
-	async function showModal(el, type) {
+	async function showModal(el, folder) {
 		await $.ajax({
-			url: '/getFolder',
+			url: '/get_file_list_modal',
 			type: 'post',
-			data: {type},
-			success: function ({type, files}) {
-				let modal = file_list_modal({type, files});
+			data: {folder},
+			success: function (modal) {
 				$(modal)
 					.on('hidden.bs.modal', function () {
 						$(this).remove();
@@ -97,6 +100,7 @@ function ltr(params) {
 						$('#file_list tr td').click(function () {
 							el.val('App/' + type + '/' + $(this).text());
 							el.removeClass('is-invalid');
+							save_state();
 							mod.modal('hide');
 						});
 					})

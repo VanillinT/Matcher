@@ -48,7 +48,8 @@ exports.appendLog = (models) => {
 	let logged_models = exports.getLoggedModels(),
 		cnt = countLaunches();
 	models.forEach((model) => {
-		model.id = logged_models[logged_models.length-1].id+1;
+		let prev_m = logged_models[logged_models.length-1];
+		model.id = prev_m ? prev_m.id+1 : 0;
 		model.status = 'В ожидании';
 		model.launch_id = cnt+1;
 		logged_models.push(model);
@@ -65,9 +66,10 @@ exports.changeLog = async (model) => {
 
 exports.deleteLog = async (id) => {
 	let logged_models = await exports.getLoggedModels();
-	console.log(logged_models);
-	logged_models = logged_models.filter(el => el.id != id);
-	console.log(logged_models);
+	if(id != '-1')
+		logged_models = logged_models.filter(el => el.id != id);
+	else
+		logged_models = [];
 	saveLog(logged_models);
 };
 

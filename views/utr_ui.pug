@@ -1,25 +1,25 @@
 tr.d-flex
-	td.col-4
+	td.col-4.p-0
+		.input-group
+			.custom-file
+				input.custom-file-input.rounded-0(type='file' id='selected_file_' + locals.id)
+				label.custom-file-label.rounded-0.overflow-hidden(for='selected_file_' + locals.id)=locals.file ? locals.file.originalname : 'Выберите файл'
+	td.col-4.p-0
 		div.input-group
-			div.custom-file
-				input.custom-file-input(type='file' id='selected_file_' + locals.id)
-				label.custom-file-label.overflow-hidden(for='selected_file_' + locals.id)=locals.file ? locals.file.originalname : 'Выберите файл'
-	td.col-4
-		div.input-group
-			input.form-control(type='text' value=(locals.file ? locals.file.originalname : '') id='selected_folder_' + locals.id)
-			div.input-group-append
-				button.btn.btn-outline-secondary(id='browse_folder_' + locals.id)
+			input.form-control.rounded-0(type='text' value=(locals.file ? locals.file.originalname : '') id='selected_folder_' + locals.id)
+			.input-group-append
+				button.btn.btn-outline-secondary.rounded-0(id='browse_folder_' + locals.id)
 					img(src='/open-iconic/svg/magnifying-glass.svg').icon
-	td.col
-		div.input-group
-			select.custom-select(id='selected_type_' + locals.id)
+	td.col.p-0
+		.input-group
+			select.custom-select.rounded-0(id='selected_type_' + locals.id)
 				option(selected value='')='Выберите тип...'
 				option(value='Data')='Данные'
 				option(value='Templates')='Шаблон'
 				option(value='Models')='Модель'
-	td.col
-		div.input-group
-			select.custom-select(id='selected_encoding_' + locals.id)
+	td.col.p-0
+		.input-group
+			select.custom-select.rounded-0(id='selected_encoding_' + locals.id)
 				option(selected value='utf-8')='UTF-8'
 				option(value='ascii')='ASCII'
 				option(value='base64')='BASE64'

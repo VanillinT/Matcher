@@ -3,11 +3,11 @@ page = '/upload_and_view/upload';
 window.history.pushState('upload', 'upload', page);
 
 up_rows.forEach(row=>{
-	processRow(row);
+	process_up_row(row);
 });
 
 $('#add_utr').click(() => {
-	new_up_Row();
+	new_up_row();
 });
 
 $('#btn_upload').click(async function () {

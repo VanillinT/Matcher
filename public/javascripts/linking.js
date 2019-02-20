@@ -1,13 +1,14 @@
 //pug ./dlp_ui.pug -c -n dlp_ui -D -o ../public/jsviews
 
+
 $('#selected_path').val(sel_path);
 
 li_rows.forEach(row=>{
-	processRow(row);
+	row.putInto($('#li_tbody'))
 });
 
 $('#add_dtr').click(() => {
-	new_li_Row();
+	new_li_row();
 });
 
 
@@ -32,11 +33,7 @@ $('#btn_start')
 			url: '/process_files',
 			data: {data},
 			success: function (res) {
-				valid_rows.forEach(row=>{
-					notify(res);
-					li_rows = li_rows.filter(r => r != row);
-					row.delete()
-				})
+				notify(res);
 			}
 		});
 	})
@@ -49,3 +46,15 @@ $('#btn_start')
 		$(this).popover('hide');
 		$('input').removeClass('is-invalid');
 	});
+
+
+function delete_ltr(id) {
+	if(id>0) {
+		let row_i = li_rows.indexOf(li_rows.find(row=> row.id === id));
+		li_rows = li_rows.splice(row_i, 1);
+	} else {
+		li_rows.forEach(row=> row.delete());
+		li_rows = [];
+	}
+	save_state();
+}

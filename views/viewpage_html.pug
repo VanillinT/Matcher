@@ -1,27 +1,27 @@
 block uv_content
 	#view_ui.px-5.pt-5
-		div.d-block
-			div.media
+		.d-block
+			.media
 				img.align-self-center(src= '/open-iconic/svg/folder.svg').icon
-				div.media-body
+				.media-body
 					label.px-2.m-auto='App'
-			div.mx-4.d-block
+			.mx-4.d-block
 				each folder, i in content
-					div.media
+					.media
 						img.align-self-center(src='/open-iconic/svg/folder.svg').icon
-						div.media-body
+						.media-body
 							label.px-2.m-auto=folder.name
-					div.mx-4
+					.mx-4
 						each file, j in folder.files
 							table.table.table-hover.table-borderless.table-sm.m-0(id='row_' + i + j)
 								tbody
-									tr
+									tr.d-flex.align-content-center
 										th.d-inline-block
 											img(src='/open-iconic/svg/file.svg').icon
 										th.d-inline-block
 											label.m-auto=file.name
 										th.d-none(id='controls_for_row_' + i + j)
-											div
+											.d-flex.text-center
 												button.btn.btn-sm.p-0.border-0(onclick=`viewFile("${file.name}","${file.fullpath}", "${folder.name}")`)
 													img(src= '/open-iconic/svg/eye.svg').icon
 												button.btn.btn-sm.p-0.border-0.mx-1(onclick=`downloadFile("${file.name}", "${file.root}")`)

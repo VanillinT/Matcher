@@ -1,14 +1,14 @@
-div.modal.fade(tabindex=-1 role='dialog' aria-hidden=true)#modal
-	div.modal-dialog(role='document')
-		div.modal-content
-			div.modal-header
-				h5='Выбор файла в '+ locals.type
+.modal.fade(tabindex=-1 role='dialog' aria-hidden=true)#modal
+	.modal-dialog(role='document')
+		.modal-content.rounded-0
+			.modal-header
+				h5='Выбор файла в папке '+ folder
 				button.close(type='button' data-dismiss='modal' aria-label='Close')
 					span(aria-hidden=true)='╳'
-			div.modal-body
+			.modal-body
 				table.table.table-hover#file_list
 					tbody
-						each file, i in locals.files
+						each file, i in files
 							tr(id='modal_row_' + i+1)
 								th(scope=row)=i+1
 								td=file

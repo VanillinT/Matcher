@@ -1,6 +1,9 @@
 .toast(role="alert" aria-live="assertive" aria-atomic="true" data-delay="2500")
 	.toast-header
-		img.mr-2.icon(src="/open-iconic/svg/check.svg")
+		if(!error)
+			img.mr-2.icon(src="/open-iconic/svg/circle-check.svg")
+		else
+			img.mr-2.icon(src="/open-iconic/svg/circle-x.svg")
 		strong.mr-auto=header
 		button.ml-2.mb-1.close(type='button' data-dismiss="toast" aria-label="Close")
 			span(aria-hidden=true) &times;

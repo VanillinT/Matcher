@@ -11,13 +11,6 @@ router.get('/', (req, res) => {
 	res.redirect('/upload_and_view');
 });
 
-
-router.post('/getFolder', (req,res)=>{
-	let type = req.body.type,
-		files = app.getFilesList(req.body.type);
-	res.send({type, files});
-});
-
 router.post('/getText', (req, res) => {
 	let path = req.body.path;
 	let rs = fs.createReadStream(path);
@@ -85,8 +78,13 @@ router.post('/getViewModal', async function (req, res) {
 	if (ext === '.csv')
 		fs.readFile(req.body.path,(err, content) => {
 			if (err) return;
-			let array = app.csv2array(content.toString(), ';');
-			res.render('csv_viewmode_modal', {file_name, array});
+			try {
+				let array = app.csv2array(content.toString(), ';');
+				res.render('csv_viewmode_modal', {file_name, array});
+			} catch (e) {
+				res.status(500);
+				res.render('toast', {header: 'Ошибка', message: 'Файл неопределённого формата', error: true});
+			}
 		});
 	else res.render('viewmode_modal', {file_name});
 });
@@ -94,9 +92,9 @@ router.post('/getViewModal', async function (req, res) {
 router.post('/upload', upload.single('file'), function (req, res) {
 	let file = req.file;
 	if(!req.body.reupload)
-		res.render('toast',{header: 'Загружено', message:`${file.originalname} успешно загружен`});
+		res.render('toast',{header: 'Загружено', message:`${file.originalname} загружен`});
 	else
-		res.render('toast',{header: 'Изменено', message:file.originalname + ' успешно изменён'});
+		res.render('toast',{header: 'Изменено', message:file.originalname + ' изменён'});
 });
 
 router.post('/download', async function (req, res) {
@@ -113,7 +111,7 @@ router.post('/delete', async function (req, res) {
 		if(!(files_left.length > 0))
 			fs.rmdir('App/' + req.body.folder);
 
-		res.render('toast', {header:'Удалено', message:`${filename} успешно удалён`});
+		res.render('toast', {header:'Удалено', message:`${filename} удалён`});
 	});
 });
 
@@ -127,6 +125,27 @@ router.get('/linking', (req,res) => {
 router.post('/linking', (req,res) => {
 	global.section = 'link';
 	res.render('linking_html');
+});
+
+router.post('/save_li_state', (req, res)=>{
+	let data = req.body.data;
+	fs.writeFile('App/linking_rows', data, (err)=>{
+		if(!err)
+			res.render('toast', {header: 'Состояние сохранено'});
+	});
+});
+
+router.get('/get_li_state', (req,res)=>{
+	fs.readFile('App/linking_rows', (err, data)=>{
+		if(!err)
+			res.send(data);
+	});
+});
+
+router.post('/get_file_list_modal', (req,res)=>{
+	let folder = req.body.folder,
+		files = app.getFilesList(folder);
+	res.render('file_list_modal', {folder, files});
 });
 
 router.post('/process_files', async (req, res) => {
@@ -161,7 +180,8 @@ router.post('/deletestatus', (req,res) => {
 	let status_id = req.body.id;
 	app.deleteLog(status_id).then(
 		fine => {
-			res.send(`Статус ${status_id} успешно удалён`)
+			let message = status_id === '-1' ? 'Все статусы удалены' : `Статус ${status_id} удалён`;
+			res.render('toast', {header: message})
 		},
 		rej => {
 			res.send(rej)

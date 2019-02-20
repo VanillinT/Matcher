@@ -1,23 +1,26 @@
 tr.d-flex
-	td.col-4
+	td.col-4.p-0
 		div.input-group
-			input.form-control.overflow-hidden(id='selected_template_' + locals.id disabled)
+			input.form-control.overflow-hidden.rounded-0(id='template_file_' + locals.id value=locals.template_file disabled)
 			div.input-group-append
-				button.btn.btn-outline-secondary(id='browse_temp_' + locals.id )
+				button.btn.btn-outline-secondary.rounded-0(id='browse_temp_' + locals.id )
 					img(src='open-iconic/svg/magnifying-glass.svg').icon
-	td.col-4
+	td.col-4.p-0
 		div.input-group
-			input.form-control.overflow-hidden(id='selected_data_' + locals.id disabled)
+			input.form-control.overflow-hidden.rounded-0(id='data_file_' + locals.id value=locals.data_file disabled)
 			div.input-group-append
-				button.btn.btn-outline-secondary(id='browse_data_' + locals.id )
+				button.btn.btn-outline-secondary.rounded-0(id='browse_data_' + locals.id )
 					img(src='open-iconic/svg/magnifying-glass.svg').icon
-	td.col
+	td.col.p-0
 		div.input-group
-			input.form-control.rounded-0(type='text' id='selected_splitter_' + locals.id value=locals.spl)
-	td.col
+			input.form-control.rounded-0(type='text' id='row_splitter_' + locals.id value=locals.row_splitter)
+	td.col.p-0
 		div.input-group
-			input.form-control.rounded-0(type='text' id='selected_rowsym_' + locals.id value=locals.nrow)
-	td.col
+			input.form-control.rounded-0(type='text' id='new_row_splitter_' + locals.id value=locals.new_row_splitter)
+	td.col.p-0
 		div.input-group.d-block
 			div.input-group-text.d-block.rounded-0
 				input(type='checkbox' id='selected_state_' + locals.id checked)
+	td.col.p-0.d-flex.justify-content-center
+		button.btn.btn-sm.p-0.border-0(onclick=`delete_ltr("${locals.id}")`).align-self-center
+			img(src='/open-iconic/svg/trash.svg').icon

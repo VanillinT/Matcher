@@ -59,10 +59,10 @@ function viewFile(filename, path, folder) {
 				})
 				.on('shown.bs.modal', function (e) {
 					$('.modal-body').outerHeight($(document).height() - $('.modal-header').outerHeight() - $('.modal-footer').outerHeight());
-					if($('#text_box'))
+					if ($('#text_box'))
 						$.post({
-							url:'/getText',
-							data:{path},
+							url: '/getText',
+							data: {path},
 							success: function (res) {
 								$('#text_box').text(res);
 							}
@@ -70,7 +70,7 @@ function viewFile(filename, path, folder) {
 					$('#btn_edit').click(function () {
 						let cb = $('#content_box'),
 							isEditable = cb.attr('contentEditable');
-						if(isEditable)
+						if (isEditable)
 							cb.removeAttr('contentEditable');
 						else cb.attr('contentEditable', !isEditable).focus();
 					});
@@ -102,8 +102,13 @@ function viewFile(filename, path, folder) {
 					});
 				})
 				.modal();
+		},
+		error: function (err) {
+			console.log(err);
+			notify(err.responseText);
 		}
 	});
+
 }
 
 function table2csv(splitter) {

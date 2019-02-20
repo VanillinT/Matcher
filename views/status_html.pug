@@ -1,25 +1,29 @@
 block sections
 	div
-	table.table.table-bordered
-		thead
-			tr
-				th='Шаблон'
-				th='Данные'
-				th='Номер запуска'
-				th='Статус'
-				th='Выходной файл'
-				th='ID процесса'
-		tbody
-			each model in logged_models
-				tr(id=`status_${model.id}`)
-					td=model.template_file
-					td=model.data_file
-					td=model.launch_id
-					td=model.status
-					td=model.out_file
-					td=model.id
-					td
-						button.btn.btn-sm.p-0.border-0(onclick=`deleteStatus("${model.id}")`).align-self-center
+		table.table.table-bordered.table-sm
+			thead
+				tr.d-flex
+					th.col-3.text-center='Шаблон'
+					th.col-3.text-center='Данные'
+					th.col.text-center.p-0='Номер запуска'
+					th.col.text-center.px-1='Статус'
+					th.col-3.text-center='Выходной файл'
+					th.col.text-center='ID'
+					th.d-flex.justify-content-center
+						button.btn.btn-sm.p-0.border-0(onclick=`deleteStatus(-1)`)
 							img(src='/open-iconic/svg/trash.svg').icon
-	script.
-		$.getScript('/javascripts/status.js');
+
+			tbody
+				each model in logged_models
+					tr.d-flex(id=`status_${model.id}`)
+						td.col-3.px-1=model.template_file
+						td.col-3.px-1=model.data_file
+						td.col.text-center.px-0=model.launch_id
+						td.col.px-1=model.status
+						td.col-3.px-1=model.out_file
+						td.col.text-center=model.id
+						td.d-flex.justify-content-center
+							button.btn.btn-sm.p-0.border-0(onclick=`deleteStatus("${model.id}")`)
+								img(src='/open-iconic/svg/trash.svg').icon
+		script.
+			$.getScript('/javascripts/status.js');
