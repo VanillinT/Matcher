@@ -91,6 +91,8 @@ router.post('/getViewModal', async function (req, res) {
 
 router.post('/upload', upload.single('file'), function (req, res) {
 	let file = req.file;
+	try{ app.decode_file(file.path); }
+	catch (e) { res.status=500; res.render('toast', {error:true, header:'Ошибка обработки', message: 'Файл загружен, но не смог быть обработан'}) }
 	if(!req.body.reupload)
 		res.render('toast',{header: 'Загружено', message:`${file.originalname} загружен`});
 	else

@@ -8,12 +8,10 @@ function utr(params) {
 		selected_file = params.selected_file,
 		selected_type = params.selected_type,
 		selected_folder = params.selected_folder,
-		selected_encoding = params.selected_encoding ? params.selected_encoding : 'utf-8',
 
 		sfile = () => $('#selected_file_' + id),
 		sfol = () => $('#selected_folder_' + id),
 		st = () => $('#selected_type_' + id),
-		se = () => $('#selected_encoding_' + id),
 
 		buildUI = () => {
 			dom = $(utr_ui({id}));
@@ -53,14 +51,10 @@ function utr(params) {
 			$('#browse_folder_' + id).click(function () {
 				sfol().val();
 			});
-
-			se().change(function () {
-				selected_encoding = $(this).val();
-			})
 		};
 
 	this.info = () => {
-		return {id, dom: '<tr class="d-flex">' + $(dom).html() + '</tr>', selected_type, selected_file, selected_folder, selected_encoding};
+		return {id, dom: '<tr class="d-flex">' + $(dom).html() + '</tr>', selected_type, selected_file, selected_folder};
 	};
 
 	this.putInto = function (parent) {
@@ -81,7 +75,6 @@ function utr(params) {
 
 	this.formData = () => {
 		let fd = new FormData();
-		fd.append('encoding', selected_encoding);
 		fd.append('folder', selected_folder);
 		fd.append('type', selected_type);
 		fd.append('file', selected_file);

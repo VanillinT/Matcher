@@ -21,10 +21,17 @@ function ltr(params) {
 				e.preventDefault();
 				await showModal(st(), 'Templates');
 			});
+
 			$('#browse_data_' + id).on('click', async function (e) {
 				e.preventDefault();
 				await showModal(sd(), 'Data');
 			});
+
+			$('#state_outline_' + id).click(function (e) {
+				if(!$(e.target).is('input'))
+					$('#selected_state_' + id).click();
+			});
+
 			[ss(), sr()].forEach((el) => {
 				el.on('change', function () {
 					$(this).val($(this).val().trim());

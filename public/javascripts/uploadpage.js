@@ -16,22 +16,25 @@ $('#btn_upload').click(async function () {
 		let formData = row.formData();
 		if (!formData) return;
 
-		$.when($.ajax({
+		$.ajax({
 			url: '/upload',
 			enctype: 'multipart/form-data',
 			processData: false,
 			cache: false,
 			contentType: false,
 			type: 'post',
-			data: formData
-		}))
-			.then((res) => {
+			data: formData,
+
+			success: function(res) {
 				notify(res);
 				up_rows = up_rows.filter(r => r != row);
 				row.delete();
-			}, (err) => {
-				alert(err);
-			});
+			},
+			error: function(err) {
+				console.log(err);
+				notify(err.responseText);
+			}
+		});
 	});
 })
 	.popover({

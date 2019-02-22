@@ -73,6 +73,14 @@ exports.deleteLog = async (id) => {
 	saveLog(logged_models);
 };
 
+exports.decode_file = (path) => {
+	let detectCharacterEncoding = require('detect-character-encoding'),
+		buffer = fs.readFileSync(path),
+		originalEncoding = detectCharacterEncoding(buffer),
+		file = fs.readFileSync(path, originalEncoding.encoding);
+	fs.writeFileSync(path, file, 'UTF-8');
+};
+
 exports.process = async (model) => {
 
 	let {template_file, data_file, row_splitter, new_row_splitter, out_dir} = model;
@@ -249,4 +257,4 @@ exports.csv2array = (data, delimeter) => {
 	}
 
 	return array;
-}
+};

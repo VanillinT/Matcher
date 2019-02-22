@@ -10,10 +10,6 @@ $('table').hover(function () {
 	$('#controls_for_' + $(this).prop('id')).removeClass('d-inline-block').addClass('d-none');
 });
 
-function showDropdown() {
-
-}
-
 function deleteFile(path, folder, elementid) {
 	let data = {path, folder};
 	$.ajax({
@@ -104,7 +100,6 @@ function viewFile(filename, path, folder) {
 				.modal();
 		},
 		error: function (err) {
-			console.log(err);
 			notify(err.responseText);
 		}
 	});
