@@ -19,7 +19,7 @@ tr.d-flex
 			input.form-control.rounded-0(type='text' id='new_row_splitter_' + locals.id value=locals.new_row_splitter)
 	td.col.p-0
 		div.input-group.d-block
-			div.input-group-text.d-block.rounded-0
+			div.input-group-text.d-block.rounded-0(id='state_outline_'+locals.id)
 				input(type='checkbox' id='selected_state_' + locals.id checked)
 	td.col.p-0.d-flex.justify-content-center
 		button.btn.btn-sm.p-0.border-0(onclick=`delete_ltr("${locals.id}")`).align-self-center
