@@ -98,7 +98,7 @@ function ltr(params) {
 							$(this).css('cursor', 'default')
 						});
 						$('#file_list tr td').click(function () {
-							el.val('App/' + type + '/' + $(this).text());
+							el.val('App/' + folder + '/' + $(this).text());
 							el.removeClass('is-invalid');
 							save_state();
 							mod.modal('hide');
