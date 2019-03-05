@@ -5,7 +5,7 @@ tr.d-flex
 				input.custom-file-input.rounded-0(type='file' id='selected_file_' + locals.id)
 				label.custom-file-label.rounded-0.overflow-hidden(for='selected_file_' + locals.id)=locals.file ? locals.file.originalname : 'Выберите файл'
 	td.col-4.p-0
-		div.input-group
+		.input-group
 			input.form-control.rounded-0(type='text' value=(locals.file ? locals.file.originalname : '') id='selected_folder_' + locals.id)
 			.input-group-append
 				button.btn.btn-outline-secondary.rounded-0(id='browse_folder_' + locals.id)

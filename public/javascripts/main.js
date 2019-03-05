@@ -3,6 +3,7 @@ let current_page = '';
 $(document).ready(()=> {
 	$('#main').height($(document).height());
 	document.title = 'SNO';
+	document.
 	$('#pagetoggles input[type="radio"]').change(function () {
 		let section = $(this).prop('name');
 		if ($(this).is(':checked'))
@@ -16,7 +17,7 @@ $(document).ready(()=> {
 				}
 			});
 	});
-	/*window.onpopstate = function () {
+	window.onpopstate = function () {
 		let showState = function (html) { $('#sections').html(html);};
 		if(current_page === '/upload_and_view/view' ? false : (current_page !== '/upload_and_view/upload'))
 			showState = null;
@@ -24,7 +25,7 @@ $(document).ready(()=> {
 			url: current_page,
 			success: showState()
 		});
-	}*/
+	}
 });
 
 let up_rows = [],
@@ -61,20 +62,22 @@ let up_rows = [],
 		$('.toast').on('hidden.bs.toast', function () {
 			$(this).remove();
 		}).toast('show');
+	},
+	save_state = () => {
+		let data = [];
+		li_rows.forEach(row => {
+			let rd = row.data();
+			data.push(rd);
+		});
+		data = JSON.stringify(data);
+		$.post({
+			url: '/save_li_state',
+			data: {data}
+		})
+	},
+	runModels = (data) => {
+		$.post({url: '/runModels', data: {data} });
 	};
-
-function save_state() {
-	let data = [];
-	li_rows.forEach(row => {
-		let rd = row.data();
-		data.push(rd);
-	});
-	data = JSON.stringify(data);
-	$.post({
-		url: '/save_li_state',
-		data: {data}
-	})
-}
 
 $.get({
 	url:'/get_li_state',

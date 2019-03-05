@@ -193,13 +193,19 @@ router.post('/deletestatus', (req,res) => {
 /* launch */
 router.get('/launch', (req,res) => {
 	section = 'launch';
-	res.render('launch');
+	let models = app.getModelsList();
+	console.log(models)
+	res.render('launch', {models});
 });
 
 router.post('/launch', (req,res) => {
 	section = 'launch';
-	res.render('launch_html');
+	let models = app.getModelsList();
+	res.render('launch_html', {models});
 });
 
+router.post('/runModels', (req,res) => {
+	app.launchModels(JSON.parse(req.body.data));
+});
 
 module.exports = router;

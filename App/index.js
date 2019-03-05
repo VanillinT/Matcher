@@ -1,5 +1,21 @@
 fs = require('fs');
 
+exports.launchModels = (data) => {
+	let cmd = require('node-cmd'),
+		dir = 'C:\\scp\\12.2\\common\\start\\run_sno_snocon.bat';
+	for (const val of data) {
+		let command = `${dir}\n` +
+			`import C:\\...\\import_file.imp\n` +
+			`solve\n` +
+			`exportsmartgraph ${__dirname}/Models/${val.model} ${val.target}`;
+		cmd.get(command, function (err, data, stderr) {
+			if (err)
+				console.log(err);
+			console.log(data);
+		});
+	}
+};
+
 exports.getAppContent = () => {
 	let root = 'App/',
 		folders = exports.getFoldersList(),
@@ -8,15 +24,20 @@ exports.getAppContent = () => {
 		let folder = {name: type, files: []},
 			files = this.getFilesList(type);
 		for(let fil of files){
-			let file = {name: fil, root:root + type, fullpath: root + type + '/' + fil};
+			let file = {name: fil, root:root + type, full_path: root + type + '/' + fil};
 			folder.files.push(file);
 		}
 		content.push(folder);
 	}
 	return content;
 };
+
+exports.getModelsList = () => {
+	return exports.getFilesList('Models');
+};
+
 exports.countChildren = (path) => {
-	return getFoldersList(path).length;
+	return exports.getFoldersList(path).length;
 };
 
 exports.getFoldersList = (path='App/') => {
@@ -35,9 +56,11 @@ exports.getLoggedModels = () => {
 		return JSON.parse(obj.toString());
 	} catch (e) { return [] }
 };
+
 function saveLog(new_state) {
 	fs.writeFileSync('App/log.json', JSON.stringify(new_state));
 }
+
 function countLaunches() {
 	let models = exports.getLoggedModels();
 	if(models[0])
