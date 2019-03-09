@@ -4,7 +4,7 @@ block sections
 			thead
 				tr.d-flex
 					th.col-5.text-center='Модель'
-					th.col-5.text-center='Целевой путь для отчёта'
+					th.col-5.text-center='Шаблон отчёта'
 					th.col.text-center='Активно'
 			tbody
 				each model,i in models
@@ -12,7 +12,10 @@ block sections
 						td.col-5.px-1.text-center(id='model_path_' + i)=model
 						td.col-5.p-0.text-center
 							.input-group
-								input.form-control.rounded-0(type='text' id='target_folder_' + i value='C://Data/' + model.slice(0, -4) + '.csv')
+								input.form-control.rounded-0(type='text' id='rep_folder_' + i value=reports[model] readonly)
+								div.input-group-append
+									button.btn.btn-outline-secondary.rounded-0(id='browse_temp_' + i)
+										img(src='/open-iconic/svg/magnifying-glass.svg').icon
 						td.col.p-0
 							div.input-group.d-block
 								div.input-group-text.d-block.rounded-0(id='state_outline_' + i)

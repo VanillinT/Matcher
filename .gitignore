@@ -8,3 +8,5 @@ App/Templates
 App/Data
 App/log.json
 linking_rows
+App/Reports/
+App/Models-Reports.json

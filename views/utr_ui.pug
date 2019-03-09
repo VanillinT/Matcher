@@ -7,13 +7,12 @@ tr.d-flex
 	td.col-4.p-0
 		.input-group
 			input.form-control.rounded-0(type='text' value=(locals.file ? locals.file.originalname : '') id='selected_folder_' + locals.id)
-			.input-group-append
+			//.input-group-append
 				button.btn.btn-outline-secondary.rounded-0(id='browse_folder_' + locals.id)
 					img(src='/open-iconic/svg/magnifying-glass.svg').icon
 	td.col.p-0
 		.input-group
 			select.custom-select.rounded-0(id='selected_type_' + locals.id)
 				option(selected value='')='Выберите тип...'
-				option(value='Data')='Данные'
-				option(value='Templates')='Шаблон'
-				option(value='Models')='Модель'
+				for folder in locals.folders
+					option=folder

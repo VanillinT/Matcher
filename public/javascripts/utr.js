@@ -14,7 +14,7 @@ function utr(params) {
 		st = () => $('#selected_type_' + id),
 
 		buildUI = () => {
-			dom = $(utr_ui({id}));
+			dom = $(utr_ui({id, folders: params.folders}));
 		},
 
 		init = () => {
@@ -38,7 +38,7 @@ function utr(params) {
 			st().change(function () {
 				selected_type = $(this).val();
 				if (!isNullOrWhitespace(selected_type))
-					sfol().val('App/' + selected_type);
+					sfol().val('/' + selected_type);
 				else
 					sfol().val('');
 				sfol().trigger('change');
@@ -64,7 +64,7 @@ function utr(params) {
 
 	this.validate = () => {
 		let valid = true;
-		[sfile(), st()].forEach(function (el) {
+		[sfile(), sfol()].forEach(function (el) {
 			if ((el.type === 'file' && !el[0].files[0]) || isNullOrWhitespace(el.val())) {
 				el.addClass('is-invalid');
 				valid = false;

@@ -1,23 +1,7 @@
 fs = require('fs');
 
-exports.launchModels = (data) => {
-	let cmd = require('node-cmd'),
-		dir = 'C:\\scp\\12.2\\common\\start\\run_sno_snocon.bat';
-	for (const val of data) {
-		let command = `${dir}\n` +
-			`import C:\\...\\import_file.imp\n` +
-			`solve\n` +
-			`exportsmartgraph ${__dirname}/Models/${val.model} ${val.target}`;
-		cmd.get(command, function (err, data, stderr) {
-			if (err)
-				console.log(err);
-			console.log(data);
-		});
-	}
-};
-
 exports.getAppContent = () => {
-	let root = 'App/',
+	let root = __dirname,
 		folders = exports.getFoldersList(),
 		content = [];
 	for(let type of folders) {
@@ -40,25 +24,25 @@ exports.countChildren = (path) => {
 	return exports.getFoldersList(path).length;
 };
 
-exports.getFoldersList = (path='App/') => {
+exports.getFoldersList = (path=__dirname) => {
 	return fs.readdirSync(path).filter(function (file) {
-		return fs.statSync(path+'/'+file).isDirectory();
+		return fs.statSync(path + '/' + file).isDirectory();
 	});
 };
 
 exports.getFilesList = (type) => {
-	return fs.readdirSync('App/' + type);
+	return fs.readdirSync(__dirname + '/' + type);
 };
 
 exports.getLoggedModels = () => {
 	try {
-		let obj  = fs.readFileSync('App/log.json');
+		let obj  = fs.readFileSync(__dirname + '/log.json');
 		return JSON.parse(obj.toString());
 	} catch (e) { return [] }
 };
 
 function saveLog(new_state) {
-	fs.writeFileSync('App/log.json', JSON.stringify(new_state));
+	fs.writeFileSync(__dirname + '/log.json', JSON.stringify(new_state));
 }
 
 function countLaunches() {
@@ -67,6 +51,7 @@ function countLaunches() {
 		return models.pop().launch_id;
 	return 0;
 }
+
 exports.appendLog = (models) => {
 	let logged_models = exports.getLoggedModels(),
 		cnt = countLaunches();
@@ -97,11 +82,13 @@ exports.deleteLog = async (id) => {
 };
 
 exports.decode_file = (path) => {
-	let detectCharacterEncoding = require('detect-character-encoding'),
+	let detect = require('charset-detector'),
+		icv = require('iconv-lite'),
 		buffer = fs.readFileSync(path),
-		originalEncoding = detectCharacterEncoding(buffer),
-		file = fs.readFileSync(path, originalEncoding.encoding);
-	fs.writeFileSync(path, file, 'UTF-8');
+		encoding = detect(buffer)[0].charsetName,
+		dec_file = icv.decode(buffer, encoding);
+	console.log(path);
+	fs.writeFileSync(path, dec_file, 'UTF-8');
 };
 
 exports.process = async (model) => {
@@ -114,12 +101,12 @@ exports.process = async (model) => {
 		array_header = [],
 		dict_header = {},
 
-		template_b = fs.readFileSync(template_file),
+		template_b = fs.readFileSync(__dirname + template_file),
 		template_string = template_b.toString("UTF-8"),
-		out_file = model.out_dir + '/' + model.template_file.split('/')[2].slice(0, -4) + '_IMP.imp';
+		out_file = __dirname + out_dir + '/' + model.template_file.split('/')[2].slice(0, -4) + '_IMP.imp';
 
-	if(!fs.existsSync(model.out_dir))
-		fs.mkdirSync(model.out_dir);
+	if(!fs.existsSync(out_dir))
+		fs.mkdirSync(out_dir);
 	model.status = 'В процессе';
 	await this.changeLog(model);
 
@@ -128,7 +115,7 @@ exports.process = async (model) => {
 		}),
 
 		s =
-			fs.createReadStream(data_file)
+			fs.createReadStream('App/' + data_file)
 				.pipe(es.split())
 				.pipe(es.mapSync(function (line) {
 
@@ -172,7 +159,6 @@ exports.process = async (model) => {
 						s.resume();
 					})
 						.on('error', async function (err) {
-							console.log('Error while reading file.', err);
 							model.out_file = out_file;
 							model.status = 'Ошибка';
 							await exports.changeLog(model);
@@ -280,4 +266,51 @@ exports.csv2array = (data, delimeter) => {
 	}
 
 	return array;
+};
+
+function writeModelsReport(model, report) {
+	let pairs = exports.getModelsReports();
+	pairs[model] = report;
+	fs.writeFile(__dirname + '/' + 'Models-Reports.json', JSON.stringify(pairs), err=>{
+		console.log(err);
+	});
+}
+
+exports.getModelsReports = () => {
+	try {
+		let info = fs.readFileSync(__dirname + '/' + 'Models-Reports.json').toString();
+		return JSON.parse(info);
+	} catch(e){return {}}
+};
+
+exports.launchModels = async (data) => {
+	let cmd = require('node-cmd'),
+		bat_dir = 'C:\\scp\\12.2\\common\\start\\run_sno_snocon.bat',
+		target_dir = 'C:\\Reports\\';
+	if (!fs.existsSync(target_dir))
+		fs.mkdirSync(target_dir);
+	for (const val of data) {
+		let model_name = val.model.slice(0, -4),
+			report_file=val.report,
+			process = cmd.get(bat_dir),
+			imp_cmd =
+				`import ${__dirname}\\Models\\${val.model}
+			`,
+			slv_cmd = `solve
+			`,
+			ld_cmd = `loadsmartgraph ${__dirname + '\\Reports\\' +  val.report}
+			`,
+			apply_cmd = `applysmartgraphs ${__dirname + '\\Reports\\' + val.report}
+			`,
+			exp_cmd = `exportsmartgraph  ${__dirname + '\\Reports\\' + val.report} ${target_dir + model_name + '_' + (new Date()).getTime() + '.csv'}
+			`;
+		process.stdout.on('data', function (data) {
+			console.log(data.toString());
+		});
+		process.stderr.on('data', (data) => {
+			console.log(data.toString());
+		});
+		process.stdin.write(imp_cmd + slv_cmd + ld_cmd + exp_cmd);
+		writeModelsReport(val.model, report_file);
+	}
 };

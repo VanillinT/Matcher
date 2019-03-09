@@ -23,7 +23,7 @@ let
 
 	storage = multer.diskStorage({
 		destination: (req, file, cb) => {
-			let dir = req.body.folder;
+			let dir = `App/${req.body.folder}`;
 			if (!fs.existsSync(dir))
 				fs.mkdirSync(dir);
 			cb(null, dir);
@@ -46,25 +46,14 @@ router.post('/upload_and_view', (req, res) => {
 router.get('/upload_and_view/:mode', (req, res, next) => {
 	global.section = 'upvi';
 	let mode = req.params.mode;
-	if (mode === 'upload') {
-		res.render('uploadpage', {mode});
-	}
-	else {
-		let content = app.getAppContent();
-		res.render('viewpage', {content, mode});
-	}
-
+	let content = app.getAppContent();
+	res.render(mode === 'upload' ? 'uploadpage' : 'viewpage', {content, mode});
 });
 
 router.post('/upload_and_view/:mode', async (req, res)=> {
 	let mode = req.params.mode;
-	if (mode === 'upload') {
-		res.render('uploadpage_html');
-	}
-	else {
-		let content = app.getAppContent();
-		res.render('viewpage_html', {content});
-	}
+	let content = app.getAppContent();
+	res.render(mode === 'upload' ? 'uploadpage_html' : 'viewpage_html', {content});
 });
 
 router.get('/getAppFolders', (req,res)=>{
@@ -91,12 +80,20 @@ router.post('/getViewModal', async function (req, res) {
 
 router.post('/upload', upload.single('file'), function (req, res) {
 	let file = req.file;
-	try{ app.decode_file(file.path); }
-	catch (e) { res.status=500; res.render('toast', {error:true, header:'Ошибка обработки', message: 'Файл загружен, но не смог быть обработан'}) }
-	if(!req.body.reupload)
-		res.render('toast',{header: 'Загружено', message:`${file.originalname} загружен`});
-	else
-		res.render('toast',{header: 'Изменено', message:file.originalname + ' изменён'});
+	try {
+		app.decode_file(file.path);
+		if (!req.body.reupload)
+			res.render('toast', {header: 'Загружено', message: `${file.originalname} загружен`});
+		else
+			res.render('toast', {header: 'Изменено', message: `${file.originalname} изменён`});
+	} catch (e) {
+		res.status(500);
+		res.render('toast', {
+			error: true,
+			header: 'Ошибка обработки',
+			message: 'Файл загружен, но не смог быть обработан'
+		})
+	}
 });
 
 router.post('/download', async function (req, res) {
@@ -111,7 +108,7 @@ router.post('/delete', async function (req, res) {
 
 		let files_left = app.getFilesList(req.body.folder);
 		if(!(files_left.length > 0))
-			fs.rmdir('App/' + req.body.folder);
+			fs.rmdir('App/' + req.body.folder, err=>{console.log(err)});
 
 		res.render('toast', {header:'Удалено', message:`${filename} удалён`});
 	});
@@ -193,19 +190,21 @@ router.post('/deletestatus', (req,res) => {
 /* launch */
 router.get('/launch', (req,res) => {
 	section = 'launch';
-	let models = app.getModelsList();
-	console.log(models)
-	res.render('launch', {models});
+	let models = app.getModelsList(),
+		reports = app.getModelsReports();
+	res.render('launch', {models, reports});
 });
 
 router.post('/launch', (req,res) => {
 	section = 'launch';
-	let models = app.getModelsList();
-	res.render('launch_html', {models});
+	let models = app.getModelsList(),
+		reports = app.getModelsReports();
+	res.render('launch_html', {models, reports});
 });
 
-router.post('/runModels', (req,res) => {
-	app.launchModels(JSON.parse(req.body.data));
+router.post('/runModels', async (req,res) => {
+	await app.launchModels(JSON.parse(req.body.data));
+	res.render('toast', {header: 'Модели поступили на обработку', message: 'Составленные отчёты можно найти в C:/Reports'})
 });
 
 module.exports = router;

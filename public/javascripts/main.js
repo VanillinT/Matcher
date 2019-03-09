@@ -3,7 +3,6 @@ let current_page = '';
 $(document).ready(()=> {
 	$('#main').height($(document).height());
 	document.title = 'SNO';
-	document.
 	$('#pagetoggles input[type="radio"]').change(function () {
 		let section = $(this).prop('name');
 		if ($(this).is(':checked'))
@@ -17,7 +16,7 @@ $(document).ready(()=> {
 				}
 			});
 	});
-	window.onpopstate = function () {
+	/*window.onpopstate = function () {
 		let showState = function (html) { $('#sections').html(html);};
 		if(current_page === '/upload_and_view/view' ? false : (current_page !== '/upload_and_view/upload'))
 			showState = null;
@@ -25,15 +24,19 @@ $(document).ready(()=> {
 			url: current_page,
 			success: showState()
 		});
-	}
+	}*/
 });
 
 let up_rows = [],
 	li_rows = [],
 	new_up_row = (row) => {
-		row = new utr({id: up_rows.length});
-		up_rows.push(row);
-		process_up_row(row)
+		$.get({
+			url: '/getAppFolders', success: (folders) => {
+				row = new utr({id: up_rows.length, folders});
+				up_rows.push(row);
+				process_up_row(row)
+			}
+		})
 	},
 	process_li_row = (row) =>{
 		if($('#li_tbody')[0])
@@ -44,7 +47,7 @@ let up_rows = [],
 			row.putInto($('#up_tbody'));
 	},
 	path_box = () => $('#selected_path').val(),
-	sel_path = 'App/Models',
+	sel_path = '/Models',
 
 	new_li_row = (row) => {
 		row = new ltr({
@@ -76,7 +79,7 @@ let up_rows = [],
 		})
 	},
 	runModels = (data) => {
-		$.post({url: '/runModels', data: {data} });
+		$.post({url: '/runModels', data: {data} , success: function(res){notify(res)}});
 	};
 
 $.get({

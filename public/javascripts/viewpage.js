@@ -74,8 +74,8 @@ function viewFile(filename, path, folder) {
 						let text = $('#text_box').text();
 						if (!text)
 							text = table2csv(';');
-						var fd = new FormData();
-						var blob = new Blob([text], {type: 'plain/text'});
+						let fd = new FormData(),
+							blob = new Blob([text], {type: 'plain/text'});
 						fd.append('reupload', 'true');
 						fd.append('folder', folder);
 						fd.append('file', blob, filename);
@@ -91,7 +91,7 @@ function viewFile(filename, path, folder) {
 								notify(res);
 							},
 							error: function (err) {
-								console.log(err);
+								notify(err.responseText);
 							}
 						});
 					});
