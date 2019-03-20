@@ -1,4 +1,19 @@
-fs = require('fs');
+let fs = require('fs');
+
+exports.init = () => {
+	let models = __dirname + '/Models',
+		templates = __dirname + '/Templates',
+		data = __dirname  + '/Data',
+		reports = __dirname + '/Reports';
+	if (!fs.existsSync(models))
+		fs.mkdirSync(models);
+	if(!fs.existsSync(templates))
+		fs.mkdirSync(templates);
+	if(!fs.existsSync(data))
+		fs.mkdirSync(data);
+	if(!fs.existsSync(reports))
+		fs.mkdirSync(reports);
+};
 
 exports.getAppContent = () => {
 	let root = 'App/',
@@ -36,13 +51,13 @@ exports.getFilesList = (type) => {
 
 exports.getLoggedModels = () => {
 	try {
-		let obj  = fs.readFileSync(__dirname + '\\log.json');
+		let obj  = fs.readFileSync(__dirname + '\\models_log.json');
 		return JSON.parse(obj.toString());
 	} catch (e) { return [] }
 };
 
 function saveLog(new_state) {
-	fs.writeFileSync(__dirname + '/log.json', JSON.stringify(new_state));
+	fs.writeFileSync(__dirname + '/models_log.json', JSON.stringify(new_state));
 }
 
 function countLaunches() {
@@ -130,18 +145,18 @@ exports.process = async (model) => {
 							}, {});
 						}
 						else {
-							var array_values = line.split(row_splitter);
+							let array_values = line.split(row_splitter);
 							array_values = array_values.map((x, i) => {
 								return {v: x, h: dict_header[i]}
 							});
 
 							// делаем замену и дописываем выход
-							var replaced_line = template_string;
+							let replaced_line = template_string;
 							array_values.forEach((x, i) => {
 								//h-исходное слово
 								//v-новое значение
 								if (x.h.length > 0) {
-									var re = new RegExp(x.h, 'g');
+									let re = new RegExp(x.h, 'g');
 									replaced_line = replaced_line.replace(re, x.v);
 								}
 							});
@@ -176,96 +191,96 @@ exports.process = async (model) => {
 exports.csv2array = (data, delimeter) => {
 	// Retrieve the delimeter
 	if (delimeter === undefined)
-		delimeter = ',';
+		delimeter = ';';
 	if (delimeter && delimeter.length > 1)
-		delimeter = ',';
+		delimeter = ';';
 
 	// initialize variables
-	var newline = '\n';
-	var eof = '';
-	var i = 0;
-	var c = data.charAt(i);
-	var row = 0;
-	var col = 0;
-	var array = [];
+	let newline = '\n',
+		eof = '',
+		i = 0,
+		c = data.charAt(i),
+		row = 0,
+		col = 0,
+		array = [];
+	try {
+		while (c != eof) {
+			// skip whitespaces
+			while (c === ' ' || c === '\t' || c === '\r') {
+				c = data.charAt(++i); // read next char
+			}
 
-	while (c != eof) {
-		// skip whitespaces
-		while (c === ' ' || c === '\t' || c === '\r') {
-			c = data.charAt(++i); // read next char
-		}
+			// get value
+			let value = "";
+			if (c === '\"') {
+				// value enclosed by double-quotes
+				c = data.charAt(++i);
 
-		// get value
-		var value = "";
-		if (c === '\"') {
-			// value enclosed by double-quotes
-			c = data.charAt(++i);
+				do {
+					if (c != '\"') {
+						// read a regular character and go to the next character
+						value += c;
+						c = data.charAt(++i);
+					}
 
-			do {
-				if (c != '\"') {
-					// read a regular character and go to the next character
+					if (c === '\"') {
+						// check for escaped double-quote
+						var cnext = data.charAt(i + 1);
+						if (cnext == '\"') {
+							// this is an escaped double-quote.
+							// Add a double-quote to the value, and move two characters ahead.
+							value += '\"';
+							i += 2;
+							c = data.charAt(i);
+						}
+					}
+				}
+				while (c != eof && c != '\"');
+
+				if (c === eof) {
+					throw "Unexpected end of data, double-quote expected";
+				}
+
+				c = data.charAt(++i);
+			} else {
+				// value without quotes
+				while (c != eof && c != delimeter && c != newline && c != ' ' && c != '\t' && c != '\r') {
 					value += c;
 					c = data.charAt(++i);
 				}
-
-				if (c === '\"') {
-					// check for escaped double-quote
-					var cnext = data.charAt(i+1);
-					if (cnext == '\"') {
-						// this is an escaped double-quote.
-						// Add a double-quote to the value, and move two characters ahead.
-						value += '\"';
-						i += 2;
-						c = data.charAt(i);
-					}
-				}
-			}
-			while (c != eof && c != '\"');
-
-			if (c === eof) {
-				throw "Unexpected end of data, double-quote expected";
 			}
 
-			c = data.charAt(++i);
-		}
-		else {
-			// value without quotes
-			while (c != eof && c != delimeter && c!= newline && c != ' ' && c != '\t' && c != '\r') {
-				value += c;
+			// add the value to the array
+			if (array.length <= row)
+				array.push([]);
+			array[row].push(value);
+
+			// skip whitespaces
+			while (c === ' ' || c === '\t' || c === '\r') {
 				c = data.charAt(++i);
 			}
-		}
 
-		// add the value to the array
-		if (array.length <= row)
-			array.push([]);
-		array[row].push(value);
+			// go to the next row or column
+			if (c === delimeter) {
+				// to the next column
+				col++;
+			} else if (c === newline) {
+				// to the next row
+				col = 0;
+				row++;
+			} else if (c != eof) {
+				// unexpected character
+				throw "Delimiter expected after character " + i;
+			}
 
-		// skip whitespaces
-		while (c === ' ' || c === '\t' || c === '\r') {
+			// go to the next character
 			c = data.charAt(++i);
 		}
-
-		// go to the next row or column
-		if (c === delimeter) {
-			// to the next column
-			col++;
-		}
-		else if (c === newline) {
-			// to the next row
-			col = 0;
-			row++;
-		}
-		else if (c != eof) {
-			// unexpected character
-			throw "Delimiter expected after character " + i;
-		}
-
-		// go to the next character
-		c = data.charAt(++i);
+		return array;
+	} catch (e) {
+		if (delimeter === ';')
+			exports.csv2array(data, ',');
 	}
-
-	return array;
 };
 
 function writeModelsReport(model, report) {

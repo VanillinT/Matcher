@@ -4,7 +4,7 @@ let express = require('express'),
 	app = require('../App/index'),
 	path = require('path');
 
-
+app.init();
 
 /* GET home page. */
 router.get('/', (req, res) => {
@@ -105,10 +105,6 @@ router.post('/delete', async function (req, res) {
 		if(err) return err;
 		let split_path = req.body.path.split('/'),
 			filename = split_path[split_path.length-1];
-
-		let files_left = app.getFilesList(req.body.folder);
-		if(!(files_left.length > 0))
-			fs.rmdir('App/' + req.body.folder, err=>{console.log(err)});
 
 		res.render('toast', {header:'Удалено', message:`${filename} удалён`});
 	});

@@ -12,7 +12,7 @@ block sections
 						td.col-5.px-1.text-center(id='model_path_' + i)=model
 						td.col-5.p-0.text-center
 							.input-group
-								input.form-control.rounded-0(type='text' id='rep_folder_' + i value=reports[model] readonly)
+								input.form-control.rounded-0(type='text' id='rep_folder_' + i value=reports[model] disabled)
 								div.input-group-append
 									button.btn.btn-outline-secondary.rounded-0(id='browse_temp_' + i)
 										img(src='/open-iconic/svg/magnifying-glass.svg').icon

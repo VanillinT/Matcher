@@ -6,7 +6,7 @@ tr.d-flex
 				label.custom-file-label.rounded-0.overflow-hidden(for='selected_file_' + locals.id)=locals.file ? locals.file.originalname : 'Выберите файл'
 	td.col-4.p-0
 		.input-group
-			input.form-control.rounded-0(type='text' value=(locals.file ? locals.file.originalname : '') id='selected_folder_' + locals.id)
+			input.form-control.rounded-0(type='text' value=(locals.file ? locals.file.originalname : '') id='selected_folder_' + locals.id disabled)
 			//.input-group-append
 				button.btn.btn-outline-secondary.rounded-0(id='browse_folder_' + locals.id)
 					img(src='/open-iconic/svg/magnifying-glass.svg').icon
