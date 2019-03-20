@@ -41,7 +41,7 @@ exports.countChildren = (path) => {
 
 exports.getFoldersList = (path=__dirname) => {
 	return fs.readdirSync(path).filter(function (file) {
-		return fs.statSync(path + '/' + file).isDirectory();
+		return fs.statSync(path + '\\' + file).isDirectory();
 	});
 };
 
@@ -57,7 +57,7 @@ exports.getLoggedModels = () => {
 };
 
 function saveLog(new_state) {
-	fs.writeFileSync(__dirname + '/models_log.json', JSON.stringify(new_state));
+	fs.writeFileSync(__dirname + '\\models_log.json', JSON.stringify(new_state));
 }
 
 function countLaunches() {
@@ -118,7 +118,7 @@ exports.process = async (model) => {
 
 		template_b = fs.readFileSync(__dirname + template_file),
 		template_string = template_b.toString("UTF-8"),
-		out_file = __dirname + out_dir + '/' + model.template_file.split('/')[2].slice(0, -4) + '_IMP.imp';
+		out_file = __dirname + out_dir + '\\' + model.template_file.split('/')[2].slice(0, -4) + '_IMP.imp';
 
 	if(!fs.existsSync(out_dir))
 		fs.mkdirSync(out_dir);

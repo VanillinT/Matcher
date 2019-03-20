@@ -10,7 +10,6 @@ $(document).ready(()=> {
 			$.post({
 				url: section,
 				success: function (html) {
-					prev_page = html;
 					$('#sections').html(html);
 					window.history.pushState(section, section, section);
 				}
@@ -47,7 +46,7 @@ let up_rows = [],
 			row.putInto($('#up_tbody'));
 	},
 	path_box = () => $('#selected_path').val(),
-	sel_path = '/Models',
+	sel_path = '\\Models',
 
 	new_li_row = (row) => {
 		row = new ltr({
@@ -55,7 +54,7 @@ let up_rows = [],
 			data_file: row ? row.data_file : '',
 			row_splitter: row ? row.row_splitter : ';',
 			new_row_splitter: row ? row.new_row_splitter : '/t',
-			id: row ? row.id : li_rows.length
+			id: row ? row.id : (li_rows.length > 0 ? li_rows[li_rows.length-1].id + 1 : 0)
 		});
 		li_rows.push(row);
 		process_li_row(row);

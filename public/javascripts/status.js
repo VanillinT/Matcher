@@ -4,7 +4,7 @@ function deleteStatus(id) {
 		data: {id},
 		success: function (res) {
 			notify(res);
-			if(id > 0 )
+			if(id >= 0 )
 				$(`#status_${id}`).remove();
 			else{
 				$('tbody tr').remove();

@@ -84,8 +84,9 @@ function ltr(params) {
 
 	this.delete = () => {
 		dom.remove();
-		delete This;
 	};
+
+	this.id = id;
 
 	async function showModal(el, folder) {
 		await $.ajax({

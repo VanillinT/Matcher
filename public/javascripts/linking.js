@@ -49,9 +49,10 @@ $('#btn_start')
 
 
 function delete_ltr(id) {
-	if(id>0) {
-		let row_i = li_rows.indexOf(li_rows.find(row=> row.id === id));
-		li_rows = li_rows.splice(row_i, 1);
+	if(id>=0) {
+		let row_i = li_rows.indexOf(li_rows.find(row => row.id == id));
+		li_rows[row_i].delete();
+		li_rows.splice(row_i, 1);
 	} else {
 		li_rows.forEach(row=> row.delete());
 		li_rows = [];
