@@ -1,14 +1,14 @@
 fs = require('fs');
 
 exports.getAppContent = () => {
-	let root = __dirname,
+	let root = 'App/',
 		folders = exports.getFoldersList(),
 		content = [];
 	for(let type of folders) {
 		let folder = {name: type, files: []},
 			files = this.getFilesList(type);
 		for(let fil of files){
-			let file = {name: fil, root:root + type, full_path: root + type + '/' + fil};
+			let file = {name: fil, root:root + '/' + type, full_path: root + '/' + type + '/' + fil};
 			folder.files.push(file);
 		}
 		content.push(folder);
@@ -31,12 +31,12 @@ exports.getFoldersList = (path=__dirname) => {
 };
 
 exports.getFilesList = (type) => {
-	return fs.readdirSync(__dirname + '/' + type);
+	return fs.readdirSync(__dirname + '\\' + type);
 };
 
 exports.getLoggedModels = () => {
 	try {
-		let obj  = fs.readFileSync(__dirname + '/log.json');
+		let obj  = fs.readFileSync(__dirname + '\\log.json');
 		return JSON.parse(obj.toString());
 	} catch (e) { return [] }
 };
@@ -115,7 +115,7 @@ exports.process = async (model) => {
 		}),
 
 		s =
-			fs.createReadStream('App/' + data_file)
+			fs.createReadStream('App\\' + data_file)
 				.pipe(es.split())
 				.pipe(es.mapSync(function (line) {
 
